@@ -7,8 +7,10 @@ import (
 	_ "embed"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sort"
+	"time"
 
 	"github.com/fluxcd/go-git-providers/gitprovider"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1beta1"
@@ -19,6 +21,7 @@ import (
 
 	wego "github.com/weaveworks/weave-gitops/api/v1alpha1"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/applications"
+	"github.com/weaveworks/weave-gitops/pkg/utils"
 	"golang.org/x/oauth2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
@@ -46,6 +49,19 @@ func CreateRepo(ctx context.Context, gp gitprovider.Client, url string) (gitprov
 		Visibility:    gitprovider.RepositoryVisibilityVar(gitprovider.RepositoryVisibilityPrivate),
 		DefaultBranch: gitprovider.StringVar("main"),
 	}, &gitprovider.RepositoryCreateOptions{AutoInit: gitprovider.BoolVar(true)})
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("could not reconcile org repo: %w", err)
+	}
+
+	err = utils.WaitUntil(os.Stdout, 3*time.Second, 5*time.Second, func() error {
+		_, err := gp.OrgRepositories().Get(ctx, *ref)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 
 	return repo, ref, err
 }
