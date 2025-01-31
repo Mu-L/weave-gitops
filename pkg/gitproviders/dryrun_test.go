@@ -6,6 +6,7 @@ import (
 	"github.com/fluxcd/go-git-providers/gitprovider"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/weaveworks/weave-gitops/pkg/vendorfakes/fakegitprovider"
 )
 
@@ -16,7 +17,7 @@ var (
 )
 
 var _ = Describe("DryRun", func() {
-	var _ = BeforeEach(func() {
+	_ = BeforeEach(func() {
 		orgProvider := orgGitProvider{
 			domain: "github.com",
 			provider: &fakegitprovider.Client{
@@ -82,7 +83,7 @@ var _ = Describe("DryRun", func() {
 	})
 
 	Describe("GetCommits", func() {
-		It("returns emtpy", func() {
+		It("returns empty", func() {
 			res, err := dryRunProvider.GetCommits(ctx, repoURL, "", 1, 1)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(res).To(Equal([]gitprovider.Commit{}))

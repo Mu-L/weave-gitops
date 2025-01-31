@@ -24,6 +24,11 @@ import (
 	httpmiddleware "github.com/slok/go-http-metrics/middleware"
 	httpmiddlewarestd "github.com/slok/go-http-metrics/middleware/std"
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/tools/clientcmd"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/client/config"
+	k8sMetrics "sigs.k8s.io/controller-runtime/pkg/metrics"
+
 	"github.com/weaveworks/weave-gitops/cmd/gitops/cmderrors"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
@@ -38,10 +43,6 @@ import (
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	"github.com/weaveworks/weave-gitops/pkg/server/middleware"
 	"github.com/weaveworks/weave-gitops/pkg/telemetry"
-	"k8s.io/client-go/tools/clientcmd"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/config"
-	k8sMetrics "sigs.k8s.io/controller-runtime/pkg/metrics"
 )
 
 const (
@@ -150,7 +151,6 @@ func runCmd(cmd *cobra.Command, args []string) error {
 
 	mux.Handle("/health/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("ok"))
-
 		if err != nil {
 			log.Error(err, "error writing health check")
 		}
@@ -293,8 +293,9 @@ func runCmd(cmd *cobra.Command, args []string) error {
 
 	addr := net.JoinHostPort(options.Host, options.Port)
 	srv := &http.Server{
-		Addr:    addr,
-		Handler: handler,
+		Addr:              addr,
+		Handler:           handler,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	go func() {
@@ -318,8 +319,9 @@ func runCmd(cmd *cobra.Command, args []string) error {
 		metricsMux.Handle("/metrics", promhttp.HandlerFor(gatherers, promhttp.HandlerOpts{}))
 
 		metricsServer = &http.Server{
-			Addr:    options.MetricsAddress,
-			Handler: metricsMux,
+			Addr:              options.MetricsAddress,
+			Handler:           metricsMux,
+			ReadHeaderTimeout: 5 * time.Second,
 		}
 
 		go func() {
@@ -366,7 +368,7 @@ func listenAndServe(log logr.Logger, srv *http.Server, options Options) error {
 	if options.MTLS {
 		caCert, err := os.ReadFile(options.TLSCertFile)
 		if err != nil {
-			return fmt.Errorf("failed reading cert file %s. %s", options.TLSCertFile, err)
+			return fmt.Errorf("failed reading cert file %s. %w", options.TLSCertFile, err)
 		}
 
 		caCertPool := x509.NewCertPool()
@@ -375,6 +377,7 @@ func listenAndServe(log logr.Logger, srv *http.Server, options Options) error {
 		srv.TLSConfig = &tls.Config{
 			ClientCAs:  caCertPool,
 			ClientAuth: tls.RequireAndVerifyClientCert,
+			MinVersion: tls.VersionTLS12,
 		}
 	} else {
 		log.Info("Using TLS", "cert_file", options.TLSCertFile, "key_file", options.TLSKeyFile)

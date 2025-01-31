@@ -12,23 +12,24 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/go-logr/logr"
-	"github.com/weaveworks/weave-gitops/core/logger"
-	"github.com/weaveworks/weave-gitops/pkg/featureflags"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	corev1 "k8s.io/api/core/v1"
 	ctrlclient "sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/weaveworks/weave-gitops/core/logger"
+	"github.com/weaveworks/weave-gitops/pkg/featureflags"
 )
 
 const (
 	LoginOIDC                  string = "oidc"
 	LoginUsername              string = "username"
-	ClusterUserAuthSecretName  string = "cluster-user-auth"
-	DefaultOIDCAuthSecretName  string = "oidc-auth"
+	ClusterUserAuthSecretName  string = "cluster-user-auth" // #nosec G101
+	DefaultOIDCAuthSecretName  string = "oidc-auth"         // #nosec G101
 	FeatureFlagClusterUser     string = "CLUSTER_USER_AUTH"
 	FeatureFlagAnonymousAuth   string = "ANONYMOUS_AUTH"
 	FeatureFlagOIDCAuth        string = "OIDC_AUTH"
-	FeatureFlagOIDCPassthrough string = "WEAVE_GITOPS_FEATURE_OIDC_AUTH_PASSTHROUGH"
+	FeatureFlagOIDCPassthrough string = "WEAVE_GITOPS_FEATURE_OIDC_AUTH_PASSTHROUGH" // #nosec G101
 
 	// ClaimUsername is the default claim for getting the user from OIDC for
 	// auth
@@ -555,13 +556,9 @@ func (s *AuthServer) Refresh(rw http.ResponseWriter, r *http.Request) (*UserPrin
 }
 
 func toJSON(rw http.ResponseWriter, ui UserInfo, log logr.Logger) {
-	b, err := json.Marshal(ui)
-	if err != nil {
-		JSONError(log, rw, fmt.Sprintf("failed to marshal to JSON: %v", err), http.StatusInternalServerError)
-		return
-	}
+	b, _ := json.Marshal(ui)
 
-	_, err = rw.Write(b)
+	_, err := rw.Write(b)
 	if err != nil {
 		log.Error(err, "Failing to write response")
 	}
@@ -580,14 +577,10 @@ func (s *AuthServer) startAuthFlow(rw http.ResponseWriter, r *http.Request) {
 		returnURL = r.URL.String()
 	}
 
-	b, err := json.Marshal(SessionState{
+	b, _ := json.Marshal(SessionState{
 		Nonce:     nonce,
 		ReturnURL: returnURL,
 	})
-	if err != nil {
-		JSONError(s.Log, rw, fmt.Sprintf("failed to marshal state to JSON: %v", err), http.StatusInternalServerError)
-		return
-	}
 
 	state := base64.StdEncoding.EncodeToString(b)
 

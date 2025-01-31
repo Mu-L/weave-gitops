@@ -1,12 +1,13 @@
-import { IconButton, Tab, Tabs, Tooltip } from "@material-ui/core";
-import { ArrowLeft, ArrowRight } from "@material-ui/icons";
+import { ArrowLeft, ArrowRight } from "@mui/icons-material";
+import { IconButton, Tab, Tabs, Tooltip } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import _ from "lodash";
 import React, { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
+import { ThemeTypes } from "../contexts/AppContext";
 import { formatURL } from "../lib/nav";
 import { PageRoute, V2Routes } from "../lib/types";
 import { Fade } from "../lib/utils";
-// eslint-disable-next-line
 import { colors } from "../typedefs/styled";
 
 import Flex from "./Flex";
@@ -82,10 +83,20 @@ const NavContent = styled.div<{ collapsed: boolean }>`
     //matches .MuiSvgIcon-root
     transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     &.selected,
-    :hover {
+    &:hover {
       background-color: ${(props) => props.theme.colors.blueWithOpacity};
     }
   }
+
+  .link-flex:hover,
+  .horizontal-tabs:hover {
+    background-color: ${(props) => props.theme.colors.blueWithOpacity};
+  }
+
+  .link-flex span:hover {
+    background-color: transparent;
+  }
+
   .header {
     opacity: ${(props) => (props.collapsed ? 0 : 1)};
     letter-spacing: 1px;
@@ -98,6 +109,12 @@ const NavContent = styled.div<{ collapsed: boolean }>`
 const CollapseButton = styled(IconButton)`
   &.MuiIconButton-root {
     margin: 0 18px 0 4px;
+    &:hover {
+      background-color: ${(props) =>
+        props.theme.mode === ThemeTypes.Dark
+          ? alpha(props.theme.colors.primary10, 0.2)
+          : alpha(props.theme.colors.primary, 0.1)};
+    }
   }
 `;
 
@@ -171,7 +188,7 @@ function Nav({
           orientation="vertical"
           value={currentPage === V2Routes.UserInfo ? false : currentPage}
           variant="scrollable"
-          scrollButtons="off"
+          scrollButtons={false}
         >
           {_.map(navItems, (n) => {
             if (n.disabled) return;

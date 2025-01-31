@@ -2,6 +2,7 @@ package gitrepo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
@@ -14,10 +15,10 @@ func CommitAndPush(ctx context.Context, client git.Git, commitMsg string, logger
 	logger.Actionf("Committing and pushing gitops updates for application")
 
 	_, err := client.Commit(git.Commit{
-		Author:  git.Author{Name: "Weave Gitops", Email: "weave-gitops@weave.works"},
+		Author:  git.Author{Name: "Weave Gitops", Email: "weave-gitops@weaveworks.org"},
 		Message: commitMsg,
 	}, filters...)
-	if err != nil && err != git.ErrNoStagedFiles {
+	if err != nil && !errors.Is(err, git.ErrNoStagedFiles) {
 		return fmt.Errorf("failed to update the repository: %w", err)
 	}
 

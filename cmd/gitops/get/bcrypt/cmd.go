@@ -6,9 +6,10 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/weaveworks/weave-gitops/cmd/gitops/config"
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/term"
+
+	"github.com/weaveworks/weave-gitops/cmd/gitops/config"
 )
 
 func HashCommand(opts *config.Options) *cobra.Command {
@@ -31,7 +32,6 @@ func hashCommandRunE() func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		file := os.Stdin
 		stats, err := file.Stat()
-
 		if err != nil {
 			return err
 		}
@@ -40,7 +40,6 @@ func hashCommandRunE() func(*cobra.Command, []string) error {
 
 		if (stats.Mode() & os.ModeCharDevice) == 0 {
 			p, err = io.ReadAll(os.Stdin)
-
 			if err != nil {
 				return err
 			}
@@ -57,7 +56,6 @@ func hashCommandRunE() func(*cobra.Command, []string) error {
 		}
 
 		secret, err := bcrypt.GenerateFromPassword(p, bcrypt.DefaultCost)
-
 		if err != nil {
 			return err
 		}

@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import Interval from "../components/Interval";
 import SourceDetail from "../components/SourceDetail";
@@ -26,7 +27,10 @@ function HelmChartDetail({ className, helmChart, customActions }: Props) {
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={helmChart?.clusterName} />,
+          <ClusterDashboardLink
+            key={helmChart.uid}
+            clusterName={helmChart?.clusterName}
+          />,
         ],
       ]
     : [];
@@ -43,8 +47,14 @@ function HelmChartDetail({ className, helmChart, customActions }: Props) {
         ["Version", helmChart.version],
         ["Current Revision", helmChart.revision],
         ["Ref", helmChart.sourceRef?.name],
-        ["Last Updated", <Timestamp time={helmChart.lastUpdatedAt} />],
-        ["Interval", <Interval interval={helmChart.interval} />],
+        [
+          "Last Updated",
+          <Timestamp key={helmChart.uid} time={helmChart.lastUpdatedAt} />,
+        ],
+        [
+          "Interval",
+          <Interval key={helmChart.uid} interval={helmChart.interval} />,
+        ],
         ...clusterInfo,
         ["Namespace", helmChart.namespace],
         ...tenancyInfo,

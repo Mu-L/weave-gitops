@@ -22,7 +22,8 @@ The path for rendered resources is configured via the
 - The path can be templated using params
 :::
 
-<details><summary>Expand to see example</summary>
+<details>
+<summary>Expand to see example</summary>
 
 ```yaml
 spec:
@@ -43,12 +44,12 @@ spec:
     // highlight-next-line
     - path: clusters/${CLUSTER_NAME}/workloads/helmreleases.yaml
       content:
-        - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        - apiVersion: helm.toolkit.fluxcd.io/v2
           kind: HelmRelease
           metadata:
             name: ${CLUSTER_NAME}-nginx
           ...
-        - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+        - apiVersion: helm.toolkit.fluxcd.io/v2
           kind: HelmRelease
           metadata:
             name: ${CLUSTER_NAME}-cert-manager

@@ -11,6 +11,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+
 	"github.com/weaveworks/weave-gitops/cmd/gitops/version"
 )
 
@@ -25,7 +26,7 @@ const (
 	app              = "cli"
 	analyticsType    = "track"
 	trackEventURL    = "https://app.pendo.io/data/track"
-	trackEventSecret = "bf6ab33e-cd70-46e7-4b77-279f54cac447"
+	trackEventSecret = "bf6ab33e-cd70-46e7-4b77-279f54cac447" // #nosec G101
 )
 
 type analyticsRequestBody struct {
@@ -36,9 +37,11 @@ type analyticsRequestBody struct {
 	Properties    *eventProperties `json:"properties"`
 }
 
-const tierKey = "tier"
-const versionKey = "version"
-const appKey = "app"
+const (
+	tierKey    = "tier"
+	versionKey = "version"
+	appKey     = "app"
+)
 
 type eventProperties map[string]interface{}
 

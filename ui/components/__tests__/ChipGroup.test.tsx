@@ -1,4 +1,5 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/dom";
+import { render } from "@testing-library/react";
 import "jest-styled-components";
 import React from "react";
 import { withTheme } from "../../lib/test-utils";
@@ -22,8 +23,8 @@ describe("ChipGroup", () => {
           chips={chipList}
           onChipRemove={setActiveChips}
           onClearAll={() => jest.fn()}
-        />
-      )
+        />,
+      ),
     );
     expect(screen.queryByText("app")).toBeTruthy();
     expect(screen.queryByText("app3")).toBeTruthy();
@@ -36,8 +37,8 @@ describe("ChipGroup", () => {
           chips={chipList}
           onChipRemove={setActiveChips}
           onClearAll={() => jest.fn()}
-        />
-      )
+        />,
+      ),
     );
     expect(screen.queryByText(`appapp${filterSeparator}null`)).toBeTruthy();
     expect(screen.queryByText(`app${filterSeparator}app`)).toBeTruthy();

@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"strings"
 
-	"google.golang.org/grpc/metadata"
-
 	"github.com/go-logr/logr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"golang.org/x/oauth2"
+	"google.golang.org/grpc/metadata"
+
 	"github.com/weaveworks/weave-gitops/core/logger"
 	"github.com/weaveworks/weave-gitops/pkg/services/auth"
-	"golang.org/x/oauth2"
 )
 
 type statusRecorder struct {
@@ -25,9 +25,11 @@ func (r *statusRecorder) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-var RequestOkText = "request success"
-var RequestErrorText = "request error"
-var ServerErrorText = "server error"
+var (
+	RequestOkText    = "request success"
+	RequestErrorText = "request error"
+	ServerErrorText  = "server error"
+)
 
 // WithGrpcErrorLogging logs errors returned from server RPC handlers.
 // Our errors happen in gRPC land, so we cannot introspect into the content of

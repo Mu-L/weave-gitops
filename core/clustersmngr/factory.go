@@ -12,14 +12,17 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/hashicorp/go-multierror"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
-	"github.com/weaveworks/weave-gitops/core/nsaccess"
-	"github.com/weaveworks/weave-gitops/pkg/featureflags"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/discovery"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+	_ "sigs.k8s.io/controller-runtime/pkg/log"
+	_ "sigs.k8s.io/controller-runtime/pkg/log/zap"
+
+	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
+	"github.com/weaveworks/weave-gitops/core/nsaccess"
+	"github.com/weaveworks/weave-gitops/pkg/featureflags"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 //go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
@@ -33,9 +36,7 @@ const (
 	usersClientResolution   = 30 * time.Second
 )
 
-var (
-	usersClientsTTL = getEnvDuration("WEAVE_GITOPS_USERS_CLIENTS_TTL", 30*time.Minute)
-)
+var usersClientsTTL = getEnvDuration("WEAVE_GITOPS_USERS_CLIENTS_TTL", 30*time.Minute)
 
 func getEnvDuration(key string, defaultDuration time.Duration) time.Duration {
 	val := os.Getenv(key)
@@ -44,7 +45,6 @@ func getEnvDuration(key string, defaultDuration time.Duration) time.Duration {
 	}
 
 	d, err := time.ParseDuration(val)
-
 	// on error return the default duration
 	if err != nil {
 		return defaultDuration
@@ -275,8 +275,7 @@ func (cf *clustersManager) watchClusters(ctx context.Context) {
 
 	cf.initialClustersLoad <- true
 
-	//nolint:staticcheck // deprecated, tracking issue: https://github.com/weaveworks/weave-gitops/issues/3812
-	if err := wait.PollImmediateInfinite(watchClustersFrequency, func() (bool, error) {
+	if err := wait.PollUntilContextCancel(ctx, watchClustersFrequency, true, func(ctx context.Context) (bool, error) {
 		if err := cf.UpdateClusters(ctx); err != nil {
 			cf.log.Error(err, "Failed to update clusters")
 		}
@@ -313,10 +312,10 @@ func (cf *clustersManager) watchNamespaces(ctx context.Context) {
 	// waits the first load of cluster to start watching namespaces
 	<-cf.initialClustersLoad
 
-	//nolint:staticcheck // deprecated, tracking issue: https://github.com/weaveworks/weave-gitops/issues/3812
-	if err := wait.PollImmediateInfinite(watchNamespaceFrequency, func() (bool, error) {
+	if err := wait.PollUntilContextCancel(ctx, watchNamespaceFrequency, true, func(ctx context.Context) (bool, error) {
 		if err := cf.UpdateNamespaces(ctx); err != nil {
-			if merr, ok := err.(*multierror.Error); ok {
+			var merr *multierror.Error
+			if errors.As(err, &merr) {
 				for _, cerr := range merr.Errors {
 					cf.log.Error(cerr, "failed to update namespaces")
 				}
@@ -351,9 +350,11 @@ func (cf *clustersManager) updateNamespacesWithClient(ctx context.Context, creat
 
 	clientset, err := createClient()
 	if err != nil {
-		if merr, ok := err.(*multierror.Error); ok {
+		var merr *multierror.Error
+		if errors.As(err, &merr) {
 			for _, err := range merr.Errors {
-				if cerr, ok := err.(*ClientError); ok {
+				var cerr *ClientError
+				if errors.As(err, &cerr) {
 					result = multierror.Append(result, fmt.Errorf("%w, cluster: %v", cerr, cerr.ClusterName))
 				}
 			}
@@ -390,7 +391,7 @@ func (cf *clustersManager) updateNamespacesWithClient(ctx context.Context, creat
 }
 
 func (cf *clustersManager) GetClustersNamespaces() map[string][]v1.Namespace {
-	return cf.clustersNamespaces.namespaces
+	return cf.clustersNamespaces.GetAll()
 }
 
 func (cf *clustersManager) syncCaches() {
@@ -543,7 +544,7 @@ func (cf *clustersManager) GetServerClient(ctx context.Context) (Client, error) 
 		result = multierror.Append(result, err)
 	}
 
-	return NewClient(pool, cf.clustersNamespaces.namespaces, cf.log), result.ErrorOrNil()
+	return NewClient(pool, cf.clustersNamespaces.GetAll(), cf.log), result.ErrorOrNil()
 }
 
 func (cf *clustersManager) UpdateUserNamespaces(ctx context.Context, user *auth.UserPrincipal) {

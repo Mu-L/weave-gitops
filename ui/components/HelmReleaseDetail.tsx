@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import { useFeatureFlags } from "../hooks/featureflags";
 import { Kind } from "../lib/api/core/types.pb";
@@ -65,7 +66,10 @@ function HelmReleaseDetail({
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={helmRelease?.clusterName} />,
+          <ClusterDashboardLink
+            key={helmRelease.uid}
+            clusterName={helmRelease?.clusterName}
+          />,
         ],
       ]
     : [];
@@ -84,7 +88,10 @@ function HelmReleaseDetail({
         ["Last Attempted Revision", helmRelease.lastAttemptedRevision],
         ...clusterInfo,
         ...tenancyInfo,
-        ["Interval", <Interval interval={helmRelease?.interval} />],
+        [
+          "Interval",
+          <Interval key={helmRelease.uid} interval={helmRelease?.interval} />,
+        ],
         ["Namespace", helmRelease?.namespace],
       ]}
     />

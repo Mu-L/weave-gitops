@@ -5,19 +5,20 @@ import (
 	"errors"
 	"fmt"
 
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	"github.com/hashicorp/go-multierror"
+	v1 "k8s.io/api/apps/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	"github.com/weaveworks/weave-gitops/core/clustersmngr"
 	"github.com/weaveworks/weave-gitops/core/logger"
 	"github.com/weaveworks/weave-gitops/core/server/types"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 	"github.com/weaveworks/weave-gitops/pkg/run/constants"
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
-	v1 "k8s.io/api/apps/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -57,9 +58,11 @@ func (cs *coreServer) ListObjects(ctx context.Context, msg *pb.ListObjectsReques
 	}
 
 	if err != nil {
-		if merr, ok := err.(*multierror.Error); ok {
+		var merr *multierror.Error
+		if errors.As(err, &merr) {
 			for _, err := range merr.Errors {
-				if cerr, ok := err.(*clustersmngr.ClientError); ok {
+				var cerr *clustersmngr.ClientError
+				if errors.As(err, &cerr) {
 					respErrors = append(respErrors, &pb.ListError{ClusterName: cerr.ClusterName, Message: cerr.Error()})
 				}
 			}
@@ -201,7 +204,6 @@ func (cs *coreServer) sessionObjectsCreated(ctx context.Context, clusterName, ob
 		Kind:        automationKind,
 		ClusterName: clusterName,
 	})
-
 	if err != nil {
 		return false, err
 	}
@@ -212,7 +214,6 @@ func (cs *coreServer) sessionObjectsCreated(ctx context.Context, clusterName, ob
 		Kind:        "Bucket",
 		ClusterName: clusterName,
 	})
-
 	if err != nil {
 		return false, err
 	}
@@ -267,7 +268,6 @@ func (cs *coreServer) GetObject(ctx context.Context, msg *pb.GetObjectRequest) (
 	tenant := GetTenant(obj.GetNamespace(), msg.ClusterName, clusterUserNamespaces)
 
 	res, err := types.K8sObjectToProto(obj, msg.ClusterName, tenant, inventory, "")
-
 	if err != nil {
 		return nil, fmt.Errorf("converting object to proto: %w", err)
 	}

@@ -5,6 +5,7 @@ import { useGetObject } from "../../../hooks/objects";
 import { Kind } from "../../../lib/api/core/types.pb";
 import { ImageRepository } from "../../../lib/objects";
 import { V2Routes } from "../../../lib/types";
+import { convertImage } from "../../../lib/utils";
 import Button from "../../Button";
 import ClusterDashboardLink from "../../ClusterDashboardLink";
 import Interval from "../../Interval";
@@ -32,7 +33,7 @@ function ImageAutomationRepoDetails({
     clusterName,
     {
       refetchInterval: 5000,
-    }
+    },
   );
   const { isFlagEnabled } = useFeatureFlags();
   const rootPath = V2Routes.ImageAutomationRepositoryDetails;
@@ -68,7 +69,7 @@ function ImageAutomationRepoDetails({
             {
               rowkey: "Image",
               children: (
-                <Link newTab={true} to={data.obj?.spec?.image}>
+                <Link newTab={true} href={convertImage(data.obj?.spec?.image)}>
                   {data.obj?.spec?.image}
                 </Link>
               ),

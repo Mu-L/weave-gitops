@@ -80,9 +80,9 @@ func (cle *ClusteredListError) Add(err ListError) {
 }
 
 func (cle ClusteredListError) Error() string {
-	var errs []string
-	for _, e := range cle.Errors {
-		errs = append(errs, e.Error())
+	errs := make([]string, len(cle.Errors))
+	for i, e := range cle.Errors {
+		errs[i] = e.Error()
 	}
 
 	return strings.Join(errs, "; ")
@@ -177,7 +177,7 @@ func (c *clustersClient) ClusteredList(ctx context.Context, clist ClusteredObjec
 
 			wg.Add(1)
 
-			go func(clusterName string, nsName string, c client.Client, optsWithNamespace ...client.ListOption) {
+			go func(clusterName, nsName string, c client.Client, optsWithNamespace ...client.ListOption) {
 				defer wg.Done()
 
 				list := clist.NewList()

@@ -7,10 +7,10 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
 	"github.com/weaveworks/weave-gitops/pkg/logger"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // Heuristic mapping from the Source controller version to the Flux version.
@@ -26,6 +26,7 @@ import (
 // 3. Add the new mapping to the map below
 // 4. Don't forget to *remove the oldest mapping* from the map below
 var sourceVerToFluxVer = map[string]string{
+	"v1.3.0":      "v2.3.0",
 	"v1.2.2":      "v2.1.2",
 	"v1.0.1":      "v2.0.1",
 	"v1.0.0":      "v2.0.0",
@@ -48,7 +49,6 @@ var sourceVerToFluxVer = map[string]string{
 	"v0.28.0":     "v0.33.0",
 	"v0.27.0":     "v0.33.0",
 	"v0.26.1":     "v0.32.0",
-	"v0.26.0":     "v0.32.0",
 }
 
 type FluxVersionInfo struct {

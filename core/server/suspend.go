@@ -5,14 +5,17 @@ import (
 	"fmt"
 
 	"github.com/hashicorp/go-multierror"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	"github.com/weaveworks/weave-gitops/core/fluxsync"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-const SuspendedByAnnotation = "metadata.weave.works/suspended-by"
-const SuspendedCommentAnnotation = "metadata.weave.works/suspended-comment"
+const (
+	SuspendedByAnnotation      = "metadata.weave.works/suspended-by"
+	SuspendedCommentAnnotation = "metadata.weave.works/suspended-comment"
+)
 
 func (cs *coreServer) ToggleSuspendResource(ctx context.Context, msg *pb.ToggleSuspendResourceRequest) (*pb.ToggleSuspendResourceResponse, error) {
 	principal := auth.Principal(ctx)

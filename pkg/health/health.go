@@ -11,6 +11,7 @@ import (
 	networkingv1 "k8s.io/api/networking/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime"
+	kstatus "sigs.k8s.io/cli-utils/pkg/kstatus/status"
 )
 
 // Represents resource health status
@@ -64,9 +65,22 @@ func (hc *healthChecker) Check(obj unstructured.Unstructured) (HealthStatus, err
 		return checkService(obj)
 	}
 
-	return HealthStatus{
-		Status: HealthStatusUnknown,
-	}, nil
+	result, err := kstatus.Compute(&obj)
+	if err != nil {
+		err = fmt.Errorf("computing kstatus for resource: %w", err)
+		return HealthStatus{Status: HealthStatusUnknown, Message: err.Error()}, err
+	}
+
+	status := HealthStatusUnknown
+	switch result.Status {
+	case kstatus.CurrentStatus:
+		status = HealthStatusHealthy
+	case kstatus.FailedStatus:
+		status = HealthStatusUnhealthy
+	case kstatus.InProgressStatus:
+		status = HealthStatusProgressing
+	}
+	return HealthStatus{Status: status, Message: result.Message}, nil
 }
 
 func checkDeployment(obj unstructured.Unstructured) (HealthStatus, error) {
@@ -166,14 +180,15 @@ func checkStatefulSet(obj unstructured.Unstructured) (HealthStatus, error) {
 		return HealthStatus{Status: HealthStatusProgressing, Message: "waiting for ready replicas"}, nil
 	}
 
-	//ref: https://github.com/kubernetes/kubernetes/blob/5232ad4a00ec93942d0b2c6359ee6cd1201b46bc/pkg/kubectl/rollout_status.go#L137
+	// ref: https://github.com/kubernetes/kubernetes/blob/5232ad4a00ec93942d0b2c6359ee6cd1201b46bc/pkg/kubectl/rollout_status.go#L137
 	if sts.Spec.UpdateStrategy.Type == appsv1.RollingUpdateStatefulSetStrategyType && sts.Spec.UpdateStrategy.RollingUpdate != nil {
 		if sts.Spec.Replicas != nil && sts.Spec.UpdateStrategy.RollingUpdate.Partition != nil {
 			if sts.Status.UpdatedReplicas < (*sts.Spec.Replicas - *sts.Spec.UpdateStrategy.RollingUpdate.Partition) {
 				return HealthStatus{
 					Status: HealthStatusProgressing,
 					Message: fmt.Sprintf("Waiting for partitioned roll out to finish: %d out of %d new pods have been updated...\n",
-						sts.Status.UpdatedReplicas, (*sts.Spec.Replicas - *sts.Spec.UpdateStrategy.RollingUpdate.Partition))}, nil
+						sts.Status.UpdatedReplicas, (*sts.Spec.Replicas - *sts.Spec.UpdateStrategy.RollingUpdate.Partition)),
+				}, nil
 			}
 		}
 

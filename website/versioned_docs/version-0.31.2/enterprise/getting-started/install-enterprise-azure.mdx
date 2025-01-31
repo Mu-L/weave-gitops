@@ -3,6 +3,8 @@ title: Azure and Weave GitOps Enterprise Installation
 hide_title: true
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 import TierLabel from "@site/docs/_components/TierLabel";
 import oauthBitbucket from '/img/oauth-bitbucket.png';
 import oauthAzureDevOps from '/img/oauth-azure-devops.png';
@@ -35,7 +37,7 @@ If you are planning to manage or connect CAPI clusters to the WE service make su
 
 ## 2. Apply the Entitlements Secret
 
-Contact sales@weave.works for a valid entitlements secret. This will come in the form of a file “entitlements.yaml”. Apply it to the cluster:
+Contact info@weaveworks.org for a valid entitlements secret. This will come in the form of a file “entitlements.yaml”. Apply it to the cluster:
 
 ```
 kubectl apply -f entitlements.yaml

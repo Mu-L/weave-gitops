@@ -1,6 +1,5 @@
-// eslint-disable-next-line
-import { CircularProgress, PropTypes } from "@material-ui/core";
-import MaterialButton, { ButtonProps } from "@material-ui/core/Button/Button";
+import { CircularProgress } from "@mui/material";
+import MaterialButton, { type ButtonProps } from "@mui/material/Button";
 import * as React from "react";
 import styled, { useTheme } from "styled-components";
 
@@ -16,7 +15,7 @@ export interface Props extends ButtonProps {
 
 const defaultProps = {
   variant: "outlined" as "text" | "outlined" | "contained",
-  color: "primary" as PropTypes.Color,
+  color: "primary" as "inherit" | "primary" | "secondary",
 };
 
 /** Form Button */
@@ -35,7 +34,6 @@ function UnstyledButton({ loading, ...props }: Props) {
       disableElevation={true}
       {...defaultProps}
       {...props}
-      innerRef={props.innerRef}
     />
   );
 }
@@ -48,6 +46,9 @@ const Button = styled(UnstyledButton)`
     line-height: 1;
     border-radius: ${(props) => props.theme.borderRadius.soft};
     font-weight: 600;
+    &:hover {
+      background-color: ${(props) => props.theme.colors.blueWithOpacity};
+    }
   }
   &.MuiButton-outlined {
     padding: 8px 12px;
@@ -60,6 +61,9 @@ export const IconButton = styled(UnstyledButton)`
     min-width: 38px;
     height: 38px;
     padding: 0;
+    &:hover {
+      background-color: ${(props) => props.theme.colors.blueWithOpacity};
+    }
   }
   &.MuiButton-text {
     padding: 0;

@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import { useFeatureFlags } from "../hooks/featureflags";
 import { Kind } from "../lib/api/core/types.pb";
@@ -41,7 +42,10 @@ function KustomizationDetail({
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={kustomization?.clusterName} />,
+          <ClusterDashboardLink
+            key={kustomization.uid}
+            clusterName={kustomization?.clusterName}
+          />,
         ],
       ]
     : [];
@@ -57,6 +61,7 @@ function KustomizationDetail({
         [
           "Source",
           <SourceLink
+            key={kustomization.uid}
             sourceRef={kustomization?.sourceRef}
             clusterName={kustomization?.clusterName}
           />,
@@ -64,7 +69,13 @@ function KustomizationDetail({
         ...clusterInfo,
         ...tenancyInfo,
         ["Path", kustomization?.path],
-        ["Interval", <Interval interval={kustomization?.interval} />],
+        [
+          "Interval",
+          <Interval
+            key={kustomization.uid}
+            interval={kustomization?.interval}
+          />,
+        ],
         ["Namespace", kustomization?.namespace],
       ]}
     />

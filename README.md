@@ -4,8 +4,11 @@
 [![LICENSE](https://img.shields.io/github/license/weaveworks/weave-gitops)](https://github.com/weaveworks/weave-gitops/blob/master/LICENSE)
 [![Contributors](https://img.shields.io/github/contributors/weaveworks/weave-gitops)](https://github.com/weaveworks/weave-gitops/graphs/contributors)
 [![Release](https://img.shields.io/github/v/release/weaveworks/weave-gitops?include_prereleases)](https://github.com/weaveworks/weave-gitops/releases/latest)
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B19155%2Fgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=shield)](https://app.fossa.com/reports/005da7c4-1f10-4889-9432-8b97c2084e41)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=shield&issueType=license)](https://app.fossa.com/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops?ref=badge_shield&issueType=license)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=shield&issueType=security)](https://app.fossa.com/projects/git%2Bgithub.com%2Fweaveworks%2Fweave-gitops?ref=badge_shield&issueType=security)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/7820/badge)](https://www.bestpractices.dev/projects/7820)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/weaveworks/weave-gitops/badge)](https://scorecard.dev/viewer/?uri=github.com/weaveworks/weave-gitops)
+[![Go Report Card](https://goreportcard.com/badge/github.com/weaveworks/weave-gitops)](https://goreportcard.com/report/github.com/weaveworks/weave-gitops)
 
 Weave GitOps is a simple, open source developer platform for people who want cloud native applications but who don't have
 Kubernetes expertise. Experience how easy it is to enable GitOps and run your apps in a cluster. Use Git to collaborate
@@ -76,7 +79,7 @@ brew tap weaveworks/tap
 brew install weaveworks/tap/gitops
 ```
 
-Please see the [getting started guide](https://docs.gitops.weave.works/docs/next/open-source/getting-started/install-OSS/).
+Please see the [getting started guide](https://docs.gitops.weaveworks.org/docs/next/open-source/getting-started/install-OSS/).
 
 ## CLI Reference
 
@@ -95,7 +98,7 @@ Examples:
   # Get the version of gitops along with commit, branch, and flux version
   gitops version
 
-  To learn more, you can find our documentation at https://docs.gitops.weave.works/
+  To learn more, you can find our documentation at https://docs.gitops.weaveworks.org/
 
 
 Available Commands:
@@ -119,18 +122,18 @@ Flags:
 Use "gitops [command] --help" for more information about a command.
 ```
 
-For more information please see the [docs](https://docs.gitops.weave.works/docs/references/cli-reference/gitops/)
+For more information please see the [docs](https://docs.gitops.weaveworks.org/docs/references/cli-reference/gitops/)
 
 ## FAQ
 
-Please see our Weave GitOps OSS [FAQ](https://www.weave.works/faqs-for-weave-gitops)
+Please see our Weave GitOps OSS [FAQ](https://www.weaveworks.org/faqs-for-weave-gitops)
 
 ## Contribution
 
 Need help or want to contribute? Please see the links below.
 
 - Getting Started?
-    - Follow our [Get Started guide](https://docs.gitops.weave.works/docs/next/open-source/getting-started/install-OSS/) and give us feedback
+    - Follow our [Get Started guide](https://docs.gitops.weaveworks.org/docs/next/open-source/getting-started/install-OSS/) and give us feedback
 - Need help?
     - Talk to us in
       the [#weave-gitops channel](https://app.slack.com/client/T2NDH1D9D/C0248LVC719/thread/C2ND76PAA-1621532937.019800)
@@ -139,7 +142,9 @@ Need help or want to contribute? Please see the links below.
     - Please create a [Github issue](https://github.com/weaveworks/weave-gitops/issues)
     - Learn more about contributing [here](./CONTRIBUTING.md).
 
-## License scan details
+[//]: # (## License scan details)
 
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B19155%2Fgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=large)](https://app.fossa.com/reports/005da7c4-1f10-4889-9432-8b97c2084e41)
+[//]: # ()
+[//]: # ([![FOSSA Status]&#40;https://app.fossa.com/api/projects/custom%2B19155%2Fgithub.com%2Fweaveworks%2Fweave-gitops.svg?type=large&#41;]&#40;https://app.fossa.com/reports/005da7c4-1f10-4889-9432-8b97c2084e41&#41;)
 
+[//]: # ()

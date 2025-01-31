@@ -1,33 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`YamlView snapshots renders 1`] = `
-.c1 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c1 {
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   gap: 4px;
   width: 100%;
 }
 
 .c3 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
 }
 
@@ -43,8 +28,7 @@ exports[`YamlView snapshots renders 1`] = `
 .c4 svg circle.path-fill,
 .c4 svg polyline.path-fill {
   fill: !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c4 svg path.stroke-fill,
@@ -54,8 +38,7 @@ exports[`YamlView snapshots renders 1`] = `
 .c4 svg circle.stroke-fill,
 .c4 svg polyline.stroke-fill {
   stroke: !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c4 svg rect.rect-height {
@@ -64,14 +47,10 @@ exports[`YamlView snapshots renders 1`] = `
 }
 
 .c4.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c4.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -91,8 +70,7 @@ exports[`YamlView snapshots renders 1`] = `
 .c5 svg circle.path-fill,
 .c5 svg polyline.path-fill {
   fill: !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg path.stroke-fill,
@@ -102,8 +80,7 @@ exports[`YamlView snapshots renders 1`] = `
 .c5 svg circle.stroke-fill,
 .c5 svg polyline.stroke-fill {
   stroke: !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg rect.rect-height {
@@ -112,14 +89,10 @@ exports[`YamlView snapshots renders 1`] = `
 }
 
 .c5.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c5.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -128,9 +101,9 @@ exports[`YamlView snapshots renders 1`] = `
 }
 
 .c2 {
-  background: #F6F7F9;
+  background: #C2C9D7;
   padding: 12px;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid #BDBDBD;
   font-family: monospace;
   color: #009CCC;
   text-overflow: ellipsis;
@@ -140,7 +113,7 @@ exports[`YamlView snapshots renders 1`] = `
   margin-bottom: 12px;
   width: 100%;
   font-size: 12px;
-  border: 1px solid #d8d8d8;
+  border: 1px solid #BDBDBD;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -153,142 +126,90 @@ exports[`YamlView snapshots renders 1`] = `
   position: absolute;
   right: 4px;
   top: 8px;
-  background: #F6F7F9;
+  background: #C2C9D7;
   padding: 4px 8px;
   border-radius: 2px;
 }
 
 .c0 pre {
-  padding: 24px 12px !important;
+  padding: 24px 12px!important;
 }
 
 <div
-  className="c0 UnstyledYamlView"
->
-  <div
-    className="c1 c2"
-  >
-    kubectl get kustomization podinfo -n flux-system -o yaml
-    <div
-      onClick={[Function]}
-      style={
-        Object {
-          "cursor": "pointer",
-        }
-      }
-    >
-      <div
-        className="c3 c4"
-      >
-        <svg
-          aria-hidden={true}
-          className="MuiSvgIcon-root"
-          focusable="false"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z"
-          />
-        </svg>
-      </div>
-    </div>
-  </div>
-  <div
-    className="code-wrapper"
+    class="c0 UnstyledYamlView"
   >
     <div
-      className="copy-wrapper"
+      class="c1 c2"
     >
+      kubectl get kustomization podinfo -n flux-system -o yaml
       <div
-        onClick={[Function]}
-        style={
-          Object {
-            "cursor": "pointer",
-          }
-        }
+        style="cursor: pointer;"
       >
         <div
-          className="c3 c5"
+          class="c3 c4"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="FileCopyOutlinedIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11l-6-6zM8 21V7h6v5h5v9H8z"
+              d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11zM8 21V7h6v5h5v9z"
             />
           </svg>
         </div>
       </div>
     </div>
-    <pre
-      style={
-        Object {
-          "MozHyphens": "none",
-          "MozTabSize": "4",
-          "OTabSize": "4",
-          "WebkitHyphens": "none",
-          "background": "#f5f2f0",
-          "backgroundColor": "transparent",
-          "color": "black",
-          "fontFamily": "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
-          "fontSize": "1em",
-          "hyphens": "none",
-          "lineHeight": "1.5",
-          "margin": 0,
-          "msHyphens": "none",
-          "overflow": "auto",
-          "padding": "1em",
-          "tabSize": "4",
-          "textAlign": "left",
-          "textShadow": "0 1px white",
-          "whiteSpace": "pre",
-          "wordBreak": "normal",
-          "wordSpacing": "normal",
-          "wordWrap": "normal",
-        }
-      }
+    <div
+      class="code-wrapper"
     >
-      <code
-        style={
-          Object {
-            "whiteSpace": "pre",
-            "wordBreak": "break-word",
-          }
-        }
+      <div
+        class="copy-wrapper"
       >
-        <span
-          style={
-            Object {
-              "textWrap": "wrap",
-            }
-          }
+        <div
+          style="cursor: pointer;"
+        >
+          <div
+            class="c3 c5"
+          >
+            <svg
+              aria-hidden="true"
+              class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+              data-testid="FileCopyOutlinedIcon"
+              focusable="false"
+              viewBox="0 0 24 24"
+            >
+              <path
+                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12zm-1 4H8c-1.1 0-1.99.9-1.99 2L6 21c0 1.1.89 2 1.99 2H19c1.1 0 2-.9 2-2V11zM8 21V7h6v5h5v9z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <pre
+        style="color: black; background: rgb(245, 242, 240); text-shadow: 0 1px white; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; font-size: 1em; text-align: left; white-space: pre; word-spacing: normal; word-break: normal; word-wrap: normal; line-height: 1.5; tab-size: 4; hyphens: none; padding: 1em; margin: 0px; overflow: auto; background-color: transparent;"
+      >
+        <code
+          style="white-space: pre; word-break: break-word;"
         >
           <span
-            className="linenumber react-syntax-highlighter-line-number"
-            style={
-              Object {
-                "color": "slategray",
-                "display": "inline-block",
-                "minWidth": "1.25em",
-                "paddingRight": "1em",
-                "textAlign": "right",
-                "userSelect": "none",
-              }
-            }
+            style="text-wrap: wrap;"
           >
-            1
+            <span
+              class="linenumber react-syntax-highlighter-line-number"
+              style="display: inline-block; min-width: 1.25em; padding-right: 1em; text-align: right; user-select: none; color: slategray;"
+            >
+              1
+            </span>
+            <span>
+              yaml\\nyaml\\nyaml\\n
+            </span>
           </span>
-          <span
-            style={Object {}}
-          >
-            yaml\\nyaml\\nyaml\\n
-          </span>
-        </span>
-      </code>
-    </pre>
+        </code>
+      </pre>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;

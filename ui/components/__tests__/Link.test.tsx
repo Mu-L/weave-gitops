@@ -1,13 +1,13 @@
 import { render } from "@testing-library/react";
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router";
 import { withTheme } from "../../lib/test-utils";
 import Link from "../Link";
 
 describe("Link", () => {
   it("doesn't create a link for oci links", () => {
     const { container: link } = render(
-      withTheme(<Link href="oci://ghcr.io/some/chart">Text</Link>)
+      withTheme(<Link href="oci://ghcr.io/some/chart">Text</Link>),
     );
     const a = link.querySelector("a");
     expect(a).toBe(null);
@@ -15,7 +15,7 @@ describe("Link", () => {
   });
   it("creates a link for http links", () => {
     const { container: link } = render(
-      withTheme(<Link href="http://google.com">Text</Link>)
+      withTheme(<Link href="http://google.com">Text</Link>),
     );
     const a = link.querySelector("a");
     expect(a).not.toBe(null);
@@ -24,7 +24,7 @@ describe("Link", () => {
   });
   it("creates a link for relative links", () => {
     const { container: link } = render(
-      withTheme(<Link href="/some-page">Text</Link>)
+      withTheme(<Link href="/some-page">Text</Link>),
     );
     const a = link.querySelector("a");
     expect(a).not.toBe(null);
@@ -36,8 +36,8 @@ describe("Link", () => {
       withTheme(
         <MemoryRouter>
           <Link to="/some-page">Text</Link>
-        </MemoryRouter>
-      )
+        </MemoryRouter>,
+      ),
     );
     const a = link.querySelector("a");
     expect(a).not.toBe(null);
@@ -49,21 +49,21 @@ describe("Link", () => {
       withTheme(
         <MemoryRouter>
           <Link to="http://google.com">Text</Link>
-        </MemoryRouter>
-      )
+        </MemoryRouter>,
+      ),
     );
     const a = link.querySelector("a");
     expect(a).not.toBe(null);
     expect(a.href).toBe("http://localhost/http://google.com");
     expect(link.textContent).toBe("Text");
   });
-  it("makes to links relative when specifying an oic link", () => {
+  it("makes to links relative when specifying an oci link", () => {
     const { container: link } = render(
       withTheme(
         <MemoryRouter>
           <Link to="oci://ghcr.io/some/chart">Text</Link>
-        </MemoryRouter>
-      )
+        </MemoryRouter>,
+      ),
     );
     const a = link.querySelector("a");
     expect(a).not.toBe(null);

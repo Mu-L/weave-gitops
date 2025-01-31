@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
-	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta1"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
+	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta2"
 	reflectorv1 "github.com/fluxcd/image-reflector-controller/api/v1beta2"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	"github.com/fluxcd/pkg/apis/meta"
@@ -18,11 +18,11 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/weaveworks/weave-gitops/core/fluxsync"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 	"github.com/weaveworks/weave-gitops/pkg/kube"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func TestSync(t *testing.T) {
@@ -30,7 +30,7 @@ func TestSync(t *testing.T) {
 
 	ctx := context.Background()
 
-	c := makeGRPCServer(k8sEnv.Rest, t)
+	c := makeGRPCServer(ctx, t, k8sEnv.Rest)
 
 	scheme, err := kube.CreateScheme()
 	g.Expect(err).To(BeNil())
@@ -75,16 +75,20 @@ func TestSync(t *testing.T) {
 	}{{
 		name: "helm release no source",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: helmv2.HelmReleaseKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        helmv2.HelmReleaseKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.HelmReleaseAdapter{HelmRelease: hr},
 	}, {
 		name: "helm release with source",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: helmv2.HelmReleaseKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        helmv2.HelmReleaseKind,
+			}},
 			WithSource: true,
 		},
 		reconcilable: fluxsync.HelmReleaseAdapter{HelmRelease: hr},
@@ -92,16 +96,20 @@ func TestSync(t *testing.T) {
 	}, {
 		name: "kustomization no source",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: kustomizev1.KustomizationKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        kustomizev1.KustomizationKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.KustomizationAdapter{Kustomization: kust},
 	}, {
 		name: "kustomization with source",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: kustomizev1.KustomizationKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        kustomizev1.KustomizationKind,
+			}},
 			WithSource: true,
 		},
 		reconcilable: fluxsync.KustomizationAdapter{Kustomization: kust},
@@ -109,65 +117,83 @@ func TestSync(t *testing.T) {
 	}, {
 		name: "gitrepository",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: sourcev1.GitRepositoryKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        sourcev1.GitRepositoryKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.GitRepositoryAdapter{GitRepository: gitRepo},
 	}, {
 		name: "bucket",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: sourcev1b2.BucketKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        sourcev1.BucketKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.BucketAdapter{Bucket: bucket},
 	}, {
 		name: "helmchart",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: sourcev1b2.HelmChartKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        sourcev1.HelmChartKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.HelmChartAdapter{HelmChart: chart},
 	}, {
 		name: "helmrepository",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: sourcev1b2.HelmRepositoryKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        sourcev1.HelmRepositoryKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.HelmRepositoryAdapter{HelmRepository: helmRepo},
 	}, {
 		name: "ocirepository",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: sourcev1b2.OCIRepositoryKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        sourcev1b2.OCIRepositoryKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.OCIRepositoryAdapter{OCIRepository: ociRepo},
 	}, {
 		name: "image repository",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: reflectorv1.ImageRepositoryKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        reflectorv1.ImageRepositoryKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.ImageRepositoryAdapter{ImageRepository: ir},
 	}, {
 		name: "image update automation",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: imgautomationv1.ImageUpdateAutomationKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        imgautomationv1.ImageUpdateAutomationKind,
+			}},
 			WithSource: false,
 		},
 		reconcilable: fluxsync.ImageUpdateAutomationAdapter{ImageUpdateAutomation: iua},
 	}, {
 		name: "multiple objects",
 		msg: &pb.SyncFluxObjectRequest{
-			Objects: []*pb.ObjectRef{{ClusterName: "Default",
-				Kind: helmv2.HelmReleaseKind}, {ClusterName: "Default",
-				Kind: helmv2.HelmReleaseKind}},
+			Objects: []*pb.ObjectRef{{
+				ClusterName: "Default",
+				Kind:        helmv2.HelmReleaseKind,
+			}, {
+				ClusterName: "Default",
+				Kind:        helmv2.HelmReleaseKind,
+			}},
 			WithSource: true,
 		},
 		reconcilable: fluxsync.HelmReleaseAdapter{HelmRelease: hr},
@@ -218,7 +244,7 @@ func TestSync(t *testing.T) {
 
 				case err := <-done:
 					if err != nil {
-						t.Errorf(err.Error())
+						t.Error(err)
 					}
 					return
 				}
@@ -247,7 +273,7 @@ func simulateReconcile(ctx context.Context, k client.Client, name types.Namespac
 
 		return k.Status().Update(ctx, obj)
 
-	case *sourcev1b2.Bucket:
+	case *sourcev1.Bucket:
 		if err := k.Get(ctx, name, obj); err != nil {
 			return err
 		}
@@ -265,7 +291,7 @@ func simulateReconcile(ctx context.Context, k client.Client, name types.Namespac
 
 		return k.Status().Update(ctx, obj)
 
-	case *sourcev1b2.HelmChart:
+	case *sourcev1.HelmChart:
 		if err := k.Get(ctx, name, obj); err != nil {
 			return err
 		}
@@ -274,7 +300,7 @@ func simulateReconcile(ctx context.Context, k client.Client, name types.Namespac
 
 		return k.Status().Update(ctx, obj)
 
-	case *sourcev1b2.HelmRepository:
+	case *sourcev1.HelmRepository:
 		if err := k.Get(ctx, name, obj); err != nil {
 			return err
 		}
@@ -356,21 +382,21 @@ func makeKustomization(name string, ns corev1.Namespace, source *sourcev1.GitRep
 	return k
 }
 
-func makeHelmChart(name string, ns corev1.Namespace) *sourcev1b2.HelmChart {
-	return &sourcev1b2.HelmChart{
+func makeHelmChart(name string, ns corev1.Namespace) *sourcev1.HelmChart {
+	return &sourcev1.HelmChart{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: ns.Name,
 		},
-		Spec: sourcev1b2.HelmChartSpec{
+		Spec: sourcev1.HelmChartSpec{
 			Chart:   "somechart",
 			Version: "v0.0.1",
-			SourceRef: sourcev1b2.LocalHelmChartSourceReference{
-				Kind: sourcev1b2.HelmRepositoryKind,
+			SourceRef: sourcev1.LocalHelmChartSourceReference{
+				Kind: sourcev1.HelmRepositoryKind,
 				Name: name,
 			},
 		},
-		Status: sourcev1b2.HelmChartStatus{
+		Status: sourcev1.HelmChartStatus{
 			ReconcileRequestStatus: meta.ReconcileRequestStatus{
 				LastHandledReconcileAt: time.Now().Format(time.RFC3339Nano),
 			},
@@ -378,14 +404,14 @@ func makeHelmChart(name string, ns corev1.Namespace) *sourcev1b2.HelmChart {
 	}
 }
 
-func makeBucket(name string, ns corev1.Namespace) *sourcev1b2.Bucket {
-	return &sourcev1b2.Bucket{
+func makeBucket(name string, ns corev1.Namespace) *sourcev1.Bucket {
+	return &sourcev1.Bucket{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: ns.Name,
 		},
-		Spec: sourcev1b2.BucketSpec{},
-		Status: sourcev1b2.BucketStatus{
+		Spec: sourcev1.BucketSpec{},
+		Status: sourcev1.BucketStatus{
 			ReconcileRequestStatus: meta.ReconcileRequestStatus{
 				LastHandledReconcileAt: time.Now().Format(time.RFC3339Nano),
 			},
@@ -393,16 +419,16 @@ func makeBucket(name string, ns corev1.Namespace) *sourcev1b2.Bucket {
 	}
 }
 
-func makeHelmRepo(name string, ns corev1.Namespace) *sourcev1b2.HelmRepository {
-	return &sourcev1b2.HelmRepository{
+func makeHelmRepo(name string, ns corev1.Namespace) *sourcev1.HelmRepository {
+	return &sourcev1.HelmRepository{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: ns.Name,
 		},
-		Spec: sourcev1b2.HelmRepositorySpec{
+		Spec: sourcev1.HelmRepositorySpec{
 			URL: "http://example.com",
 		},
-		Status: sourcev1b2.HelmRepositoryStatus{
+		Status: sourcev1.HelmRepositoryStatus{
 			ReconcileRequestStatus: meta.ReconcileRequestStatus{
 				LastHandledReconcileAt: time.Now().Format(time.RFC3339Nano),
 			},
@@ -410,21 +436,21 @@ func makeHelmRepo(name string, ns corev1.Namespace) *sourcev1b2.HelmRepository {
 	}
 }
 
-func makeHelmRelease(name string, ns corev1.Namespace, repo *sourcev1b2.HelmRepository, chart *sourcev1b2.HelmChart) *helmv2.HelmRelease {
+func makeHelmRelease(name string, ns corev1.Namespace, repo *sourcev1.HelmRepository, chart *sourcev1.HelmChart) *helmv2.HelmRelease {
 	return &helmv2.HelmRelease{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: ns.Name,
 		},
 		Spec: helmv2.HelmReleaseSpec{
-			Chart: helmv2.HelmChartTemplate{
+			Chart: &helmv2.HelmChartTemplate{
 				Spec: helmv2.HelmChartTemplateSpec{
 					Chart:   chart.Spec.Chart,
 					Version: chart.Spec.Version,
 					SourceRef: helmv2.CrossNamespaceObjectReference{
 						Name:      repo.GetName(),
 						Namespace: repo.GetNamespace(),
-						Kind:      sourcev1b2.HelmRepositoryKind,
+						Kind:      sourcev1.HelmRepositoryKind,
 					},
 				},
 			},

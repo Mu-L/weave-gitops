@@ -2,8 +2,6 @@ name: Docs
 
 on:
   pull_request:
-    branches:
-      - 'main'
     paths:
       - 'website/**'
   push:
@@ -17,92 +15,56 @@ permissions:
   contents: read # for actions/checkout to fetch code
 
 jobs:
-  staging-release:
+  build:
     permissions:
       statuses: write
-    if: ${{ github.event_name != 'push' && github.repository_owner == 'weaveworks' && !github.event.pull_request.head.repo.fork }}
+    if: "${{ github.event_name != 'push' }}"
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: website
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - name: Setup Node.js
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
-          node-version: "16.x"
+          node-version-file: website/package.json
       - name: Build docs
         env:
-          GA_KEY: "dummy"
-          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
           NODE_OPTIONS: "--max-old-space-size=4096"
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_HEAD_REF: "${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}"
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
           yarn clear
-          export DOC_BASE_URL="/$GITHUB_HEAD_REF/"
-          export DOC_URL=https://staging.docs.gitops.weave.works
-          export STAGING_BUILD=true
+          export STAGING_BUILD=false
           yarn build
-      - id: auth
-        uses: google-github-actions/auth@35b0e87d162680511bf346c299f71c9c5c379033 # v1.1.1
+          touch build/.nojekyll
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
         with:
-          credentials_json: ${{ secrets.PROD_DOCS_GITOPS_UPLOAD }}
-      - id: upload-file
-        uses: google-github-actions/upload-cloud-storage@e95a15f226403ed658d3e65f40205649f342ba2c # v1.0.3
-        with:
+          name: github-pages
           path: website/build
-          destination: staging.docs.gitops.weave.works/${{ github.head_ref }}
-          parent: false
-          headers: |-
-            cache-control: no-cache
-      - id: add-docs-status
-        env:
-          GITHUB_HEAD_REF: ${{ github.head_ref }}
-        run: |
-          # Pull this out to a heredoc so we can easily interpolate variables
-          PAYLOAD=$(cat <<EOF
-          {
-            "state": "success",
-            "context": "Doc site preview",
-            "target_url": "https://staging.docs.gitops.weave.works/$GITHUB_HEAD_REF"
-          }
-          EOF
-          )
+          retention-days: 90
 
-          curl --request POST \
-            --url https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha }} \
-            --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-            --header 'content-type: application/json' \
-            --data "$PAYLOAD" \
-            --fail
-
-  prod-release:
-    if: github.event_name != 'pull_request'
+  deploy:
+    if: "${{ github.repository_owner == 'weaveworks' && github.ref_name == 'main'}}"
+    permissions:
+      statuses: write
+      pull-requests: write
+      id-token: write
+      pages: write
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: website
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
     steps:
-      - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac # v4.0.0
-      - uses: actions/setup-node@5e21ff4d9bc1a8cf6de233a3057d20ec6b3fb69d # v3.8.1
-        with:
-          node-version: "16.x"
-      - name: Build docs
-        env:
-          GA_KEY: ${{ secrets.GA_KEY }}
-          ALGOLIA_API_KEY: ${{ secrets.ALGOLIA_API_KEY }}
-          NODE_OPTIONS: "--max-old-space-size=4096"
-        run: |
-          yarn install --frozen-lockfile
-          yarn clear
-          yarn build
-      - id: auth
-        uses: google-github-actions/auth@35b0e87d162680511bf346c299f71c9c5c379033 # v1.1.1
-        with:
-          credentials_json: ${{ secrets.PROD_DOCS_GITOPS_UPLOAD }}
-      - id: upload-file
-        uses: google-github-actions/upload-cloud-storage@e95a15f226403ed658d3e65f40205649f342ba2c # v1.0.3
-        with:
-          path: website/build
-          destination: production.docs.gitops.weave.works
-          parent: false
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5

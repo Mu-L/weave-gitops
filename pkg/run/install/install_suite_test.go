@@ -5,8 +5,9 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/weaveworks/weave-gitops/pkg/testutils"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/weaveworks/weave-gitops/pkg/testutils"
 )
 
 var (
@@ -31,4 +32,8 @@ var _ = BeforeSuite(func() {
 
 	cleanupK8s = k8sEnv.Stop
 	k8sClient = k8sEnv.Client
+})
+
+var _ = AfterSuite(func() {
+	cleanupK8s()
 })

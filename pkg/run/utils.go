@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/fluxcd/pkg/apis/meta"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,6 +16,8 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/util/retry"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/weaveworks/weave-gitops/pkg/kube"
 )
 
 func RequestReconciliation(ctx context.Context, kubeClient client.Client, namespacedName types.NamespacedName, gvk schema.GroupVersionKind) (string, error) {
@@ -103,7 +104,7 @@ func GetPodFromResourceDescription(ctx context.Context, kubeClient client.Client
 	case "service":
 		svc := &corev1.Service{}
 		if err := kubeClient.Get(ctx, namespacedName, svc); err != nil {
-			return nil, fmt.Errorf("error getting service: %s, namespaced Name: %v", err, namespacedName)
+			return nil, fmt.Errorf("error getting service: %w, namespaced Name: %v", err, namespacedName)
 		}
 
 		// list pods of the service "svc" by selector in a specific namespace using the controller-runtime client
@@ -131,7 +132,7 @@ func GetPodFromResourceDescription(ctx context.Context, kubeClient client.Client
 	case "deployment":
 		deployment := &appsv1.Deployment{}
 		if err := kubeClient.Get(ctx, namespacedName, deployment); err != nil {
-			return nil, fmt.Errorf("error getting deployment: %s, namespaced Name: %v", err, namespacedName)
+			return nil, fmt.Errorf("error getting deployment: %w, namespaced Name: %v", err, namespacedName)
 		}
 
 		// list pods of the deployment "deployment" by selector in a specific namespace using the controller-runtime client

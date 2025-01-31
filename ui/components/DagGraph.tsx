@@ -1,4 +1,4 @@
-import { Slider } from "@material-ui/core";
+import { Slider } from "@mui/material";
 import * as d3d from "d3-dag";
 import _ from "lodash";
 import * as React from "react";
@@ -43,7 +43,7 @@ const GraphDiv = styled.div`
 
 function DagGraph({ className, nodes }: Props) {
   //zoom
-  const defaultZoomPercent = 85;
+  const defaultZoomPercent = 75;
   const [zoomPercent, setZoomPercent] = React.useState(defaultZoomPercent);
 
   //pan
@@ -63,7 +63,7 @@ function DagGraph({ className, nodes }: Props) {
   //minimum zoomBox is 1000
   const zoomBox = 15000 - 14000 * (zoomPercent / 100);
   //since viewbox is so large, make smaller mouse movements correspond to larger pan
-  const svgRef = React.useRef<SVGSVGElement>();
+  const svgRef = React.useRef<SVGSVGElement>(undefined);
   let panScale = 1;
   if (svgRef.current) {
     panScale = zoomBox / svgRef.current.getBoundingClientRect().width;
@@ -83,17 +83,19 @@ function DagGraph({ className, nodes }: Props) {
   const linkStrokeWidth = 5;
 
   //use d3 to create DAG structure
-  const stratify = d3d.dagStratify();
-  const root = stratify(nodes);
+  const builder = d3d.graphStratify();
+  const graph = builder(nodes);
   const makeDag = d3d
     .sugiyama()
     .nodeSize(() => [
       nodeSize.width + nodeSize.horizontalSeparation,
       nodeSize.height + nodeSize.verticalSeparation,
     ]);
-  const { width } = makeDag(root);
-  const descendants = root.descendants();
-  const links = root.links();
+  const { width } = makeDag(graph);
+  const root = [...graph.roots()][0];
+
+  const descendants = root ? [...root.descendants()] : [];
+  const links = [...graph.links()];
 
   const graphOffsetX = zoomBox / 2 - width / 2;
   const verticalSeparationHalf = nodeSize.verticalSeparation / 2;
@@ -151,7 +153,6 @@ function DagGraph({ className, nodes }: Props) {
                     height={nodeSize.height}
                     key={index}
                     transform={`translate(${d.x - nodeSize.width / 2}, ${d.y})`}
-                    fill="white"
                     strokeWidth={2}
                     stroke={"#737373"}
                     overflow="visible"
@@ -190,7 +191,7 @@ export default styled(DagGraph).attrs({ className: DagGraph.name })`
     width: 6px;
   }
   .MuiSlider-vertical .MuiSlider-thumb {
-    margin-left: -9px;
+    margin-left: 0px;
   }
   .MuiSlider-thumb {
     width: 24px;

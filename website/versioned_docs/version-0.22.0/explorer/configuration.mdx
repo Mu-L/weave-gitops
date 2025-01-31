@@ -44,7 +44,7 @@ spec:
 
 ### Clusters
 
-Explorer watches the [GitopsClusters](https://docs.gitops.weave.works/docs/next/cluster-management/managing-existing-clusters/#connect-a-cluster)
+Explorer watches the [GitopsClusters](https://docs.gitops.weaveworks.org/docs/next/cluster-management/managing-existing-clusters/#connect-a-cluster)
 that you have connected to Weave Gitops Enterprise, as well as your Management cluster.
 
 ### Kinds
@@ -79,7 +79,7 @@ We look into them separately.
 
 ## Authentication and Authorization for querying
 
-Explorer leverages existing authentication and authorization built-in the [application](https://docs.gitops.weave.works/docs/configuration/securing-access-to-the-dashboard/).
+Explorer leverages existing authentication and authorization built-in the [application](https://docs.gitops.weaveworks.org/docs/configuration/securing-access-to-the-dashboard/).
 It identifies for a user logged in the application: its identity and the access permissions via Kuberentes RBAC.
 Query results are filtered honouring the access determined via RBAC.
 
@@ -101,7 +101,8 @@ To configure collection, you would need to extend this configuration with the fo
 
 1. Create a ServiceAccount `collector` in `flux-system` namespace for any leaf cluster that you want to watch.
 
-<details><summary>Expand to see an example</summary>
+<details>
+<summary>Expand to see an example</summary>
 
 ```yaml
 apiVersion: v1
@@ -116,7 +117,8 @@ metadata:
 
 2. Create a ClusterRole `collector` with the permissions to watch the supported resources.
 
-<details><summary>Expand to see an example</summary>
+<details>
+<summary>Expand to see an example</summary>
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -142,7 +144,8 @@ rules:
 
 3. Create a ClusterRolebinding `collector` to assign permissions to `collector` ServiceAccount.
 
-<details><summary>Expand to see an example</summary>
+<details>
+<summary>Expand to see an example</summary>
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -165,7 +168,8 @@ If you want the collector to watch a particular namespace use a RoleBinding inst
 
 4. Extend impersonation rules to allow service account impersonation for ServiceAccount `collector`
 
-<details><summary>Expand to see an example</summary>
+<details>
+<summary>Expand to see an example</summary>
 
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1

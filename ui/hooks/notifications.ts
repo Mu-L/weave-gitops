@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useQuery } from "react-query";
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import { ListError } from "../lib/api/core/core.pb";
 import { Kind } from "../lib/api/core/types.pb";
@@ -15,21 +15,21 @@ export function useListProviders(
   opts: ReactQueryOptions<Res, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
-  return useQuery<Res, RequestError>(
-    ["providers", namespace],
-    () => {
+  return useQuery<Res, RequestError>({
+    queryKey: ["providers", namespace],
+    queryFn: () => {
       return api.ListObjects({ namespace, kind: Kind.Provider }).then((res) => {
         const providers = res.objects?.map(
-          (obj) => convertResponse(Kind.Provider, obj) as Provider
+          (obj) => convertResponse(Kind.Provider, obj) as Provider,
         );
         return { objects: providers, errors: res.errors };
       });
     },
-    opts
-  );
+    ...opts,
+  });
 }
 
 export function useListAlerts(
@@ -38,20 +38,20 @@ export function useListAlerts(
   opts: ReactQueryOptions<AlertsRes, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
-  return useQuery<AlertsRes, RequestError>(
-    ["alerts", namespace],
-    () => {
+  return useQuery<AlertsRes, RequestError>({
+    queryKey: ["alerts", namespace],
+    queryFn: () => {
       return api.ListObjects({ namespace, kind: Kind.Alert }).then((res) => {
         const alerts = res.objects?.map(
-          (obj) => convertResponse(Kind.Alert, obj) as Alert
+          (obj) => convertResponse(Kind.Alert, obj) as Alert,
         );
         const matches = alerts.filter((alert) => alert.providerRef === name);
         return { objects: matches, errors: res.errors };
       });
     },
-    opts
-  );
+    ...opts,
+  });
 }

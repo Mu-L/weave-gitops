@@ -1,35 +1,36 @@
 run:
-  timeout: 5m
-  go: '1.20'
+  timeout: 10m
 
 linters:
   disable-all: true
   enable:
-    #- containedctx
+    - containedctx
     #- contextcheck
-    #- depguard
+    - depguard
     - errcheck
-    #- errchkjson
+    - errchkjson
     #- errname
+    - errorlint
     #- gochecknoinits
-    #- gci
+    - gci
     #- goconst
     - gocritic
     #- gocyclo
     #- godot
-    #- gofumpt
-    #- gosec
+    - gofumpt
+    - gosec
     - gosimple
     - govet
     - ineffassign
     #- lll
-    #- misspell
-    #- nolintlint
-    #- prealloc
+    - loggercheck
+    - misspell
+    - nolintlint
+    - prealloc
     - staticcheck
     - stylecheck
-    #- tenv
-    #- thelper
+    - tenv
+    - thelper
     #- tparallel
     - typecheck
     - unconvert
@@ -39,11 +40,12 @@ linters:
 
 linters-settings:
   depguard:
-    list-type: blacklist
-    packages:
-      - k8s.io/kubernetes
-    packages-with-error-messages:
-      k8s.io/kubernetes: "do not use k8s.io/kubernetes directly"
+    rules:
+      prevent_kubernetes_dependency:
+        list-mode: lax # allow unless explicitly denied
+        deny:
+          - pkg: k8s.io/kubernetes
+            desc: "do not use k8s.io/kubernetes directly"
   errcheck:
     exclude-functions:
       - encoding/json.Marshal
@@ -83,12 +85,19 @@ linters-settings:
       - performance
       - style
   gofumpt:
-    lang-version: "1.20"
     extra-rules: true
+  gosec:
+    excludes:
+      - G110
+      - G115
+      - G204
+      - G306
   lll:
     line-length: 150
 
 issues:
+  exclude-dirs:
+    - tilt_modules
   exclude-rules:
     # ignore errcheck for code under a /test folder
     - path: "test/*"
@@ -99,3 +108,8 @@ issues:
     - source: "flags.Parse|response.WriteError"
       linters:
         - errcheck
+
+output:
+  formats:
+    - format: colored-line-number
+      path: stdout

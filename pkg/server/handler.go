@@ -7,16 +7,15 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+
 	core "github.com/weaveworks/weave-gitops/core/server"
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	"github.com/weaveworks/weave-gitops/pkg/server/middleware"
 )
 
-var (
-	PublicRoutes = []string{
-		"/v1/featureflags",
-	}
-)
+var PublicRoutes = []string{
+	"/v1/featureflags",
+}
 
 type Config struct {
 	CoreServerConfig core.CoreServerConfig

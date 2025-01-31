@@ -5,12 +5,11 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/weaveworks/weave-gitops/pkg/runner"
 )
 
-var (
-	cliRunner runner.Runner
-)
+var cliRunner runner.Runner
 
 var _ = BeforeEach(func() {
 	cliRunner = &runner.CLIRunner{}

@@ -1,5 +1,4 @@
-import { Box, Collapse } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Alert, Box, Collapse } from "@mui/material";
 import { sortBy, uniqBy } from "lodash";
 import * as React from "react";
 import styled from "styled-components";
@@ -72,7 +71,7 @@ function ErrorList({ className, errors }: Props) {
   }
 
   const uniq = uniqBy(errors, (error) =>
-    [error.clusterName, error.message].join()
+    [error.clusterName, error.message].join(),
   );
 
   const sorted = sortBy(uniq, "clusterName", "namespace", "message");

@@ -1,5 +1,5 @@
 import { AlertListErrors } from "./components/AlertListErrors";
-import { ReconciledObjectsAutomation } from "./components/AutomationDetail";
+import type { ReconciledObjectsAutomation } from "./components/AutomationDetail";
 import AutomationsTable from "./components/AutomationsTable";
 import BucketDetail from "./components/BucketDetail";
 import Button from "./components/Button";
@@ -33,8 +33,8 @@ import ImageAutomationRepoDetails from "./components/ImageAutomation/repositorie
 import ImageRepositoriesTable from "./components/ImageAutomation/repositories/ImageRepositoriesTable";
 import ImageAutomationUpdatesDetails from "./components/ImageAutomation/updates/ImageAutomationUpdatesDetails";
 import ImageAutomationUpdatesTable from "./components/ImageAutomation/updates/ImageAutomationUpdatesTable";
-import InfoList, { InfoField } from "./components/InfoList";
-import Input, { InputProps } from "./components/Input";
+import InfoList, { type InfoField } from "./components/InfoList";
+import Input, { type InputProps } from "./components/Input";
 import Interval from "./components/Interval";
 import KubeStatusIndicator, {
   computeReady,
@@ -48,14 +48,13 @@ import Logo from "./components/Logo";
 import MessageBox from "./components/MessageBox";
 import Metadata from "./components/Metadata";
 import Modal from "./components/Modal";
-import Nav, { NavItem } from "./components/Nav";
+import Nav, { type NavItem } from "./components/Nav";
 import ImageAutomationIcon from "./components/NavIcons/ImageAutomationIcon";
 import SourcesIcon from "./components/NavIcons/SourcesIcon";
 import NotificationsTable from "./components/NotificationsTable";
 import OCIRepositoryDetail from "./components/OCIRepositoryDetail";
 import Page from "./components/Page";
 import PageStatus from "./components/PageStatus";
-import Pendo from "./components/Pendo";
 import PolicyDetails from "./components/Policies/PolicyDetails/PolicyDetails";
 import { PolicyTable } from "./components/Policies/PolicyList/PolicyTable";
 import { ViolationDetails } from "./components/Policies/PolicyViolations/PolicyViolationDetails";
@@ -91,7 +90,7 @@ import {
   useLinkResolver,
 } from "./contexts/LinkResolverContext";
 import { useListAutomations, useSyncFluxObject } from "./hooks/automations";
-import { useDebounce, useRequestState } from "./hooks/common";
+import { useDebounce } from "./hooks/common";
 import { useListEvents } from "./hooks/events";
 import { useFeatureFlags } from "./hooks/featureflags";
 import {
@@ -113,7 +112,7 @@ import { PARENT_CHILD_LOOKUP } from "./lib/graph";
 import { formatURL, getParentNavRouteValue } from "./lib/nav";
 import {
   Alert,
-  Automation,
+  type Automation,
   Bucket,
   FluxObject,
   GitRepository,
@@ -225,7 +224,6 @@ export {
   PARENT_CHILD_LOOKUP,
   Page,
   PageStatus,
-  Pendo,
   PolicyDetails,
   PolicyTable,
   PolicyViolationsList,
@@ -289,7 +287,6 @@ export {
   useListProviders,
   useListSources,
   useNavigation,
-  useRequestState,
   useSyncFluxObject,
   useToggleSuspend,
   withBasePath,

@@ -3,12 +3,13 @@ package terraform
 import (
 	"os"
 
+	"github.com/flux-iac/tofu-controller/tfctl"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/weaveworks/tf-controller/tfctl"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+
 	"github.com/weaveworks/weave-gitops/cmd/gitops/config"
 	"github.com/weaveworks/weave-gitops/pkg/run"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 )
 
 var kubeConfigArgs *genericclioptions.ConfigFlags

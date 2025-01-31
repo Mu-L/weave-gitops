@@ -10,14 +10,36 @@ type Props = {
   onSubmit: (val: string) => void;
 };
 
-const Expander = styled(({ expanded, className, children }) => (
-  <div className={`${className} ${expanded ? "expanded" : ""}`}>{children}</div>
-))`
+const Expander = styled(
+  ({
+    expanded,
+    className,
+    children,
+  }: {
+    expanded: boolean;
+    className?: string;
+    children?: any;
+  }) => (
+    <div className={`${className} ${expanded ? "expanded" : ""}`}>
+      {children}
+    </div>
+  ),
+)`
   width: 0px;
-  transition: width 0.3s ease-in-out;
+  transition-property: opacity, width;
+  transition-duration: 0.5s;
+  transition-timing-function: cubic-bezier(0.46, 0.03, 0.52, 0.96);
   margin-left: 4px;
+  opacity: 0;
+
   &.expanded {
     width: 200px;
+    opacity: 1;
+  }
+
+  input {
+    padding: 8px 10px;
+    border-bottom: 1px solid ${(props) => props.theme.colors.neutral40};
   }
 `;
 
@@ -51,6 +73,7 @@ function SearchField({ className, onSubmit }: Props) {
         className={className}
         variant="text"
         color="inherit"
+        size="large"
       >
         <Icon
           type={IconType.ExploreIcon}
@@ -63,7 +86,7 @@ function SearchField({ className, onSubmit }: Props) {
           <Input
             id="table-search"
             placeholder="Search"
-            inputProps={{ ref: inputRef }}
+            inputRef={inputRef}
             value={value}
             onChange={(ev) => setValue(ev.target.value)}
           />

@@ -1,11 +1,11 @@
-ARG FLUX_VERSION=0.24.1
+ARG FLUX_VERSION=2.4.0
 ARG FLUX_CLI=ghcr.io/fluxcd/flux-cli:v$FLUX_VERSION
 
 # Alias for flux
-FROM $FLUX_CLI as flux
+FROM $FLUX_CLI@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f AS flux
 
 # Go build
-FROM golang:1.20 AS go-build
+FROM golang:1.23.5@sha256:8c10f21bec412f08f73aa7b97ca5ac5f28a39d8a88030ad8a339fd0a781d72b4 AS go-build
 
 # Add known_hosts entries for GitHub and GitLab
 RUN mkdir ~/.ssh
@@ -15,8 +15,11 @@ RUN ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
 COPY Makefile /app/
 COPY tools /app/tools
 WORKDIR /app
+RUN go env -w GOCACHE=/go-cache
+RUN go env -w GOMODCACHE=/gomod-cache
 COPY go.* /app/
-RUN go mod download
+RUN --mount=type=cache,target=/gomod-cache \
+    go mod download
 COPY . /app
 
 # These are ARGS are defined here to minimise cache misses
@@ -25,10 +28,11 @@ COPY . /app
 ARG LDFLAGS="-X localbuild=true"
 ARG GIT_COMMIT="_unset_"
 
-RUN LDFLAGS=$LDFLAGS GIT_COMMIT=$GIT_COMMIT make gitops
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache \
+    LDFLAGS=$LDFLAGS GIT_COMMIT=$GIT_COMMIT make gitops
 
 # Distroless
-FROM gcr.io/distroless/base as runtime
+FROM gcr.io/distroless/base@sha256:74ddbf52d93fafbdd21b399271b0b4aac1babf8fa98cab59e5692e01169a1348 AS runtime
 COPY --from=flux /usr/local/bin/flux /usr/local/bin/flux
 COPY --from=go-build /app/bin/gitops /gitops
 COPY --from=go-build /root/.ssh/known_hosts /root/.ssh/known_hosts

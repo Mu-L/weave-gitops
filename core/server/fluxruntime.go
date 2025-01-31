@@ -8,23 +8,23 @@ import (
 	"os"
 	"sync"
 
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
+	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	"github.com/hashicorp/go-multierror"
-	"github.com/weaveworks/weave-gitops/core/clustersmngr"
-	"github.com/weaveworks/weave-gitops/core/logger"
-	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
+	appsv1 "k8s.io/api/apps/v1"
+	v1 "k8s.io/api/core/v1"
+	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
-	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
-	appsv1 "k8s.io/api/apps/v1"
-	v1 "k8s.io/api/core/v1"
-	apiextensions "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
+	"github.com/weaveworks/weave-gitops/core/clustersmngr"
+	"github.com/weaveworks/weave-gitops/core/logger"
+	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 const (
@@ -82,9 +82,11 @@ func (cs *coreServer) ListRuntimeObjects(ctx context.Context, msg *pb.ListRuntim
 func listRuntimeObjectsByLabels(ctx context.Context, cs *coreServer, respErrors []*pb.ListError, labels []string) ([]*pb.ListError, []*pb.Deployment) {
 	clustersClient, err := cs.clustersManager.GetImpersonatedClient(ctx, auth.Principal(ctx))
 	if err != nil {
-		if merr, ok := err.(*multierror.Error); ok {
+		var merr *multierror.Error
+		if errors.As(err, &merr) {
 			for _, err := range merr.Errors {
-				if cerr, ok := err.(*clustersmngr.ClientError); ok {
+				var cerr *clustersmngr.ClientError
+				if errors.As(err, &cerr) {
 					respErrors = append(respErrors, &pb.ListError{ClusterName: cerr.ClusterName, Message: cerr.Error()})
 				}
 			}
@@ -392,7 +394,7 @@ func (cs *coreServer) GetChildObjects(ctx context.Context, msg *pb.GetChildObjec
 	})
 
 	if err := clustersClient.List(ctx, msg.ClusterName, &listResult, opts); err != nil {
-		return nil, fmt.Errorf("could not get unstructured object: %s", err)
+		return nil, fmt.Errorf("could not get unstructured object: %w", err)
 	}
 
 	respErrors := multierror.Error{}
@@ -420,7 +422,6 @@ ItemsLoop:
 		tenant := GetTenant(obj.GetNamespace(), msg.ClusterName, clusterUserNamespaces)
 
 		obj, err := coretypes.K8sObjectToProto(&obj, msg.ClusterName, tenant, nil, "")
-
 		if err != nil {
 			respErrors = *multierror.Append(fmt.Errorf("error converting objects: %w", err), respErrors.Errors...)
 			continue
@@ -434,13 +435,13 @@ ItemsLoop:
 func sanitizeSecret(obj *unstructured.Unstructured) (client.Object, error) {
 	bytes, err := obj.MarshalJSON()
 	if err != nil {
-		return nil, fmt.Errorf("marshaling secret: %v", err)
+		return nil, fmt.Errorf("marshaling secret: %w", err)
 	}
 
 	s := &v1.Secret{}
 
 	if err := json.Unmarshal(bytes, s); err != nil {
-		return nil, fmt.Errorf("unmarshaling secret: %v", err)
+		return nil, fmt.Errorf("unmarshaling secret: %w", err)
 	}
 
 	s.Data = map[string][]byte{"redacted": []byte(nil)}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type JSX } from "react";
 import styled from "styled-components";
 import { useSyncFluxObject } from "../../hooks/automations";
 import { useToggleSuspend } from "../../hooks/flux";
@@ -57,7 +57,7 @@ const SyncActions = ({
       suspend: true,
       comment: suspendMessage,
     },
-    "object"
+    "object",
   );
 
   const resume = useToggleSuspend(
@@ -66,7 +66,7 @@ const SyncActions = ({
       suspend: false,
       comment: "",
     },
-    "object"
+    "object",
   );
 
   return (
@@ -74,10 +74,10 @@ const SyncActions = ({
       <SyncControls
         className={className}
         hideSyncOptions={hideSyncOptions}
-        syncLoading={sync.isLoading}
+        syncLoading={sync.isPending}
         syncDisabled={suspended}
-        suspendDisabled={suspend.isLoading || suspended}
-        resumeDisabled={resume.isLoading || !suspended}
+        suspendDisabled={suspend.isPending || suspended}
+        resumeDisabled={resume.isPending || !suspended}
         customActions={customActions}
         onSyncClick={syncHandler}
         onSuspendClick={() =>
