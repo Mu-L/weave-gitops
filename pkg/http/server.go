@@ -3,11 +3,13 @@ package http
 import (
 	"context"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"sync"
+	"time"
 )
 
 // MultiServer lets you create and run an HTTP server that serves over both, HTTP and HTTPS. It is a convenience wrapper around net/http and crypto/tls.
@@ -59,7 +61,7 @@ func createTLSListener(port int, certFile, keyFile string) (net.Listener, error)
 		return nil, fmt.Errorf("unable to load TLS key pair: %w", err)
 	}
 
-	listener, err := tls.Listen("tcp", fmt.Sprintf(":%d", port), &tls.Config{Certificates: []tls.Certificate{cert}})
+	listener, err := tls.Listen("tcp", fmt.Sprintf(":%d", port), &tls.Config{Certificates: []tls.Certificate{cert}, MinVersion: tls.VersionTLS12})
 	if err != nil {
 		return nil, fmt.Errorf("unable to start TLS listener: %w", err)
 	}
@@ -69,20 +71,21 @@ func createTLSListener(port int, certFile, keyFile string) (net.Listener, error)
 
 func startServer(ctx context.Context, hndlr http.Handler, listener net.Listener, logger *log.Logger) {
 	srv := http.Server{
-		Addr:    listener.Addr().String(),
-		Handler: hndlr,
+		Addr:              listener.Addr().String(),
+		Handler:           hndlr,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
-	logger.Printf("https://" + srv.Addr)
+	logger.Printf("https://%s", srv.Addr)
 
 	go func() {
-		if err := srv.Serve(listener); err != http.ErrServerClosed {
+		if err := srv.Serve(listener); !errors.Is(err, http.ErrServerClosed) {
 			logger.Fatalf("server quit unexpectedly: %s", err)
 		}
 	}()
 	<-ctx.Done()
 	logger.Printf("shutting down %s", listener.Addr())
 
-	if err := srv.Shutdown(ctx); err != nil && err != context.Canceled {
+	if err := srv.Shutdown(ctx); err != nil && !errors.Is(err, context.Canceled) {
 		logger.Printf("error shutting down %s: %s", listener.Addr(), err)
 	}
 }

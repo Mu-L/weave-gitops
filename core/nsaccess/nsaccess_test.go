@@ -6,9 +6,6 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -18,6 +15,10 @@ import (
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
+
+	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
+	"github.com/weaveworks/weave-gitops/pkg/kube"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 var userName = "test-user"
@@ -418,6 +419,7 @@ func makeRole(ns *corev1.Namespace) types.NamespacedName {
 }
 
 func createRole(t *testing.T, cl client.Client, key types.NamespacedName, rules []rbacv1.PolicyRule) {
+	t.Helper()
 	role := &rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{Name: "test-role", Namespace: key.Namespace},
 		Rules:      rules,
@@ -428,7 +430,8 @@ func createRole(t *testing.T, cl client.Client, key types.NamespacedName, rules 
 
 	binding := &rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "test-role-binding", Namespace: key.Namespace},
+			Name: "test-role-binding", Namespace: key.Namespace,
+		},
 		Subjects: []rbacv1.Subject{
 			{
 				Kind:     "User",

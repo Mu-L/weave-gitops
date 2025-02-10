@@ -6,21 +6,23 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
 	extv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/kube"
 )
 
 func TestIsAvailable(t *testing.T) {
 	g := NewGomegaWithT(t)
-	c := makeGRPCServer(k8sEnv.Rest, t)
+
+	ctx := context.Background()
+
+	c := makeGRPCServer(ctx, t, k8sEnv.Rest)
 
 	scheme, err := kube.CreateScheme()
 	g.Expect(err).NotTo(HaveOccurred())
-
-	ctx := context.Background()
 
 	_, err = client.New(k8sEnv.Rest, client.Options{
 		Scheme: scheme,

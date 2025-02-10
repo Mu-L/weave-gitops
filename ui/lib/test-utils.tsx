@@ -1,9 +1,12 @@
-import { MuiThemeProvider } from "@material-ui/core";
+import {
+  ThemeProvider as MuiThemeProvider,
+  StyledEngineProvider,
+} from "@mui/material";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createMemoryHistory } from "history";
 import _ from "lodash";
 import * as React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { Router } from "react-router-dom";
+import { Router } from "react-router";
 import { ThemeProvider } from "styled-components";
 import AppContextProvider, {
   AppProps,
@@ -23,10 +26,11 @@ import {
 } from "./api/core/core.pb";
 import theme, { muiTheme } from "./theme";
 import { RequestError } from "./types";
+
 export type CoreOverrides = {
   GetChildObjects?: (req: GetChildObjectsRequest) => GetChildObjectsResponse;
   GetReconciledObjects?: (
-    req: GetReconciledObjectsRequest
+    req: GetReconciledObjectsRequest,
   ) => GetReconciledObjectsResponse;
   GetVersion?: (req: GetVersionRequest) => GetVersionResponse;
   ListObjects?: (req: ListObjectsRequest) => ListObjectsResponse;
@@ -34,7 +38,7 @@ export type CoreOverrides = {
 
 export const createCoreMockClient = (
   ovr: CoreOverrides,
-  error?: RequestError
+  error?: RequestError,
 ): typeof Core => {
   const promisified = _.reduce(
     ovr,
@@ -48,7 +52,7 @@ export const createCoreMockClient = (
 
       return result;
     },
-    {}
+    {},
   );
 
   return promisified as typeof Core;
@@ -58,9 +62,11 @@ export function withTheme(element, mode: ThemeTypes = ThemeTypes.Light) {
   const appliedTheme = theme(mode);
   return (
     <ThemeProvider theme={appliedTheme}>
-      <MuiThemeProvider theme={muiTheme(appliedTheme.colors, mode)}>
-        {element}
-      </MuiThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <MuiThemeProvider theme={muiTheme(appliedTheme.colors, mode)}>
+          {element}
+        </MuiThemeProvider>
+      </StyledEngineProvider>
     </ThemeProvider>
   );
 }
@@ -73,7 +79,7 @@ type TestContextProps = AppProps & {
 export function withContext(
   TestComponent,
   url: string,
-  { api, featureFlags, ...appProps }: TestContextProps
+  { api, featureFlags, ...appProps }: TestContextProps,
 ) {
   const history = createMemoryHistory();
   history.push(url);
@@ -82,10 +88,10 @@ export function withContext(
   });
   const isElement = React.isValidElement(TestComponent);
   window.matchMedia = jest.fn();
-  //@ts-ignore
+  //@ts-expect-error TODO
   window.matchMedia.mockReturnValue({ matches: false });
   return (
-    <Router history={history}>
+    <Router location={url} navigator={history}>
       <AppContextProvider footer={<></>} {...appProps}>
         <QueryClientProvider client={queryClient}>
           <CoreClientContext.Provider

@@ -4,9 +4,9 @@ import {
   Radio,
   RadioGroup,
   Tooltip,
-} from "@material-ui/core";
-import { alpha } from "@material-ui/core/styles/colorManipulator";
-import React from "react";
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import React, { type JSX } from "react";
 import styled, { keyframes } from "styled-components";
 import { ThemeTypes } from "../../contexts/AppContext";
 import Button from "../Button";
@@ -72,7 +72,7 @@ export const IconButton = styled(Button)`
     height: 32px;
     padding: 0;
 
-    :disabled {
+    &.Mui-disabled {
       svg {
         fill: ${(props) =>
           props.theme.mode === ThemeTypes.Dark
@@ -81,7 +81,7 @@ export const IconButton = styled(Button)`
       }
     }
 
-    :hover {
+    &:hover {
       background-color: ${(props) =>
         props.theme.mode === ThemeTypes.Dark
           ? alpha(props.theme.colors.primary10, 0.2)
@@ -90,6 +90,19 @@ export const IconButton = styled(Button)`
   }
   &.MuiButton-text {
     padding: 0;
+
+    &.Mui-disabled {
+      color: ${(props) =>
+        props.theme.mode === ThemeTypes.Dark
+          ? props.theme.colors.primary30
+          : props.theme.colors.neutral20};
+      svg {
+        fill: ${(props) =>
+          props.theme.mode === ThemeTypes.Dark
+            ? props.theme.colors.primary30
+            : props.theme.colors.neutral20};
+      }
+    }
   }
 `;
 
@@ -108,7 +121,7 @@ const SyncControls = ({
   onResumeClick,
 }: Props) => {
   const [syncType, setSyncType] = React.useState(
-    hideSyncOptions ? SyncType.WithoutSource : SyncType.WithSource
+    hideSyncOptions ? SyncType.WithoutSource : SyncType.WithSource,
   );
 
   const handleSyncTypeChange = (value: SyncType) => {
@@ -178,6 +191,7 @@ const SyncControls = ({
             data-testid="sync-button"
             disabled={disableSyncButtons}
             onClick={() => onSyncClick(syncType)}
+            size="large"
           >
             <Icon type={IconType.PlayIcon} size="medium" />
           </IconButton>
@@ -192,6 +206,7 @@ const SyncControls = ({
                 data-testid="suspend-button"
                 disabled={suspendDisabled}
                 onClick={onSuspendClick}
+                size="large"
               >
                 <Icon type={IconType.PauseIcon} size="medium" />
               </IconButton>
@@ -204,6 +219,7 @@ const SyncControls = ({
                 data-testid="resume-button"
                 disabled={resumeDisabled}
                 onClick={onResumeClick}
+                size="large"
               >
                 <Icon
                   type={IconType.ResumeIcon}
@@ -227,7 +243,6 @@ export default styled(SyncControls)`
 
   .rotate-icon {
     color: ${(props) => props.theme.colors.primary10};
-
     animation: 1s linear infinite ${rotateAnimation};
   }
 `;

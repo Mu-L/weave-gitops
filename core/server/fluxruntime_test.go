@@ -9,12 +9,6 @@ import (
 
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	. "github.com/onsi/gomega"
-	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
-	"github.com/weaveworks/weave-gitops/core/server"
-	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/featureflags"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"google.golang.org/grpc/metadata"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -24,6 +18,13 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+
+	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
+	"github.com/weaveworks/weave-gitops/core/server"
+	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/featureflags"
+	"github.com/weaveworks/weave-gitops/pkg/kube"
 )
 
 func TestGetReconciledObjects(t *testing.T) {
@@ -31,7 +32,7 @@ func TestGetReconciledObjects(t *testing.T) {
 
 	ctx := context.Background()
 
-	c := makeGRPCServer(k8sEnv.Rest, t)
+	c := makeGRPCServer(ctx, t, k8sEnv.Rest)
 
 	scheme, err := kube.CreateScheme()
 	g.Expect(err).To(BeNil())
@@ -197,7 +198,7 @@ func TestGetReconciledObjectsWithSecret(t *testing.T) {
 
 	ctx := context.Background()
 
-	c := makeGRPCServer(k8sEnv.Rest, t)
+	c := makeGRPCServer(ctx, t, k8sEnv.Rest)
 
 	scheme, err := kube.CreateScheme()
 	g.Expect(err).To(BeNil())
@@ -307,8 +308,8 @@ func TestGetChildObjects(t *testing.T) {
 	g.Expect(err).To(BeNil())
 
 	client := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(&ns, deployment, rs).Build()
-	cfg := makeServerConfig(client, t, "")
-	c := makeServer(cfg, t)
+	cfg := makeServerConfig(t, client, "")
+	c := makeServer(ctx, t, cfg)
 
 	res, err := c.GetChildObjects(ctx, &pb.GetChildObjectsRequest{
 		ParentUid: string(deployment.UID),
@@ -383,8 +384,8 @@ func TestListFluxRuntimeObjects(t *testing.T) {
 			scheme, err := kube.CreateScheme()
 			g.Expect(err).To(BeNil())
 			client := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(tt.objects...).Build()
-			cfg := makeServerConfig(client, t, "")
-			c := makeServer(cfg, t)
+			cfg := makeServerConfig(t, client, "")
+			c := makeServer(ctx, t, cfg)
 			res, err := c.ListFluxRuntimeObjects(ctx, &pb.ListFluxRuntimeObjectsRequest{})
 			g.Expect(err).NotTo(HaveOccurred())
 
@@ -447,16 +448,13 @@ func TestListRuntimeObjects(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.description, func(t *testing.T) {
-			_ = os.Setenv(server.GitopsRuntimeFeatureFlag, "true")
-			defer func() {
-				_ = os.Unsetenv(server.GitopsRuntimeFeatureFlag)
-			}()
+			t.Setenv(server.GitopsRuntimeFeatureFlag, "true")
 			featureflags.SetFromEnv(os.Environ())
 			scheme, err := kube.CreateScheme()
 			g.Expect(err).To(BeNil())
 			client := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(tt.objects...).Build()
-			cfg := makeServerConfig(client, t, "")
-			c := makeServer(cfg, t)
+			cfg := makeServerConfig(t, client, "")
+			c := makeServer(ctx, t, cfg)
 
 			res, err := c.ListRuntimeObjects(ctx, &pb.ListRuntimeObjectsRequest{})
 
@@ -522,8 +520,8 @@ func TestListFluxCrds(t *testing.T) {
 	g.Expect(err).To(BeNil())
 
 	client := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(crd1, crd2).Build()
-	cfg := makeServerConfig(client, t, "")
-	c := makeServer(cfg, t)
+	cfg := makeServerConfig(t, client, "")
+	c := makeServer(ctx, t, cfg)
 
 	res, err := c.ListFluxCrds(ctx, &pb.ListFluxCrdsRequest{})
 
@@ -565,7 +563,8 @@ func TestListRuntimeCrds(t *testing.T) {
 				}, Spec: apiextensions.CustomResourceDefinitionSpec{
 					Group:    "group",
 					Names:    apiextensions.CustomResourceDefinitionNames{Plural: "policies", Kind: "kind"},
-					Versions: []apiextensions.CustomResourceDefinitionVersion{}}},
+					Versions: []apiextensions.CustomResourceDefinitionVersion{},
+				}},
 			},
 			func(res *pb.ListRuntimeCrdsResponse) {
 				g.Expect(res.Crds).To(HaveLen(2))
@@ -579,8 +578,8 @@ func TestListRuntimeCrds(t *testing.T) {
 			scheme, err := kube.CreateScheme()
 			g.Expect(err).To(BeNil())
 			client := fake.NewClientBuilder().WithScheme(scheme).WithRuntimeObjects(tt.objects...).Build()
-			cfg := makeServerConfig(client, t, "")
-			c := makeServer(cfg, t)
+			cfg := makeServerConfig(t, client, "")
+			c := makeServer(ctx, t, cfg)
 
 			res, err := c.ListRuntimeCrds(ctx, &pb.ListRuntimeCrdsRequest{})
 			g.Expect(err).NotTo(HaveOccurred())

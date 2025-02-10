@@ -1,5 +1,5 @@
-import { IconButton, Input, InputAdornment } from "@material-ui/core";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton, Input, InputAdornment } from "@mui/material";
 import qs from "query-string";
 import * as React from "react";
 import styled from "styled-components";
@@ -8,7 +8,7 @@ import Button from "../components/Button";
 import DarkModeSwitch from "../components/DarkModeSwitch";
 import Flex from "../components/Flex";
 import LoadingPage from "../components/LoadingPage";
-import { Auth } from "../contexts/AuthContext";
+import { Auth, AuthContext } from "../contexts/AuthContext";
 import { useFeatureFlags } from "../hooks/featureflags";
 import { useInDarkMode } from "../hooks/theme";
 import images from "../lib/images";
@@ -82,12 +82,12 @@ type Props = {
 function SignIn({ darkModeEnabled = true }: Props) {
   const { isFlagEnabled, flags } = useFeatureFlags();
 
-  const formRef = React.useRef<HTMLFormElement>();
+  const formRef = React.useRef<HTMLFormElement>(undefined);
   const {
     signIn,
     error: authError,
     loading: authLoading,
-  } = React.useContext(Auth);
+  } = React.useContext(Auth) as AuthContext;
   const [password, setPassword] = React.useState<string>("");
   const [username, setUsername] = React.useState<string>("");
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
@@ -102,7 +102,7 @@ function SignIn({ darkModeEnabled = true }: Props) {
       qs.stringify({
         // BE handles the redirect to return_url after authentication
         // so add the base path
-        return_url: window.origin + withBasePath(redirect),
+        return_url: window.origin + withBasePath(redirect.toString()),
       }));
   };
 
@@ -125,7 +125,7 @@ function SignIn({ darkModeEnabled = true }: Props) {
       {authError && (
         <AlertWrapper
           severity="error"
-          title="Error signin in"
+          title="Error signing in"
           message={`${
             authError.status === 401
               ? `Incorrect username or password.`
@@ -150,11 +150,13 @@ function SignIn({ darkModeEnabled = true }: Props) {
             src={dark ? images.logoDark : images.logoLight}
             height="60px"
             width="auto"
+            alt=""
           />
           <img
             src={dark ? images.logotypeLight : images.logotype}
             height="32px"
             width="auto"
+            alt=""
           />
         </Logo>
         {isFlagEnabled("OIDC_AUTH") ? (
@@ -207,6 +209,7 @@ function SignIn({ darkModeEnabled = true }: Props) {
                       aria-label="toggle password visibility"
                       onClick={() => setShowPassword(!showPassword)}
                       color="primary"
+                      size="large"
                     >
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
@@ -224,7 +227,7 @@ function SignIn({ darkModeEnabled = true }: Props) {
         <DocsWrapper center align>
           Need help? Have a look at the&nbsp;
           <a
-            href="https://docs.gitops.weave.works/docs/getting-started"
+            href="https://docs.gitops.weaveworks.org/docs/getting-started"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -232,7 +235,10 @@ function SignIn({ darkModeEnabled = true }: Props) {
           </a>
         </DocsWrapper>
         <Footer>
-          <img src={dark ? images.signInWheelDark : images.signInWheel} />
+          <img
+            src={dark ? images.signInWheelDark : images.signInWheel}
+            alt=""
+          />
         </Footer>
       </FormWrapper>
     </Flex>

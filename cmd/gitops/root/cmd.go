@@ -3,13 +3,15 @@ package root
 import (
 	"fmt"
 	"log"
+	"math/rand/v2"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/manifoldco/promptui"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"k8s.io/client-go/rest"
+
 	"github.com/weaveworks/weave-gitops/cmd/gitops/check"
 	cfg "github.com/weaveworks/weave-gitops/cmd/gitops/config"
 	"github.com/weaveworks/weave-gitops/cmd/gitops/create"
@@ -26,7 +28,6 @@ import (
 	"github.com/weaveworks/weave-gitops/pkg/config"
 	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"github.com/weaveworks/weave-gitops/pkg/utils"
-	"k8s.io/client-go/rest"
 )
 
 const defaultNamespace = "flux-system"
@@ -45,7 +46,7 @@ func init() {
 }
 
 func RootCmd() *cobra.Command {
-	var rootCmd = &cobra.Command{
+	rootCmd := &cobra.Command{
 		Use:           "gitops",
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -59,7 +60,7 @@ func RootCmd() *cobra.Command {
   # Get the version of gitops along with commit, branch, and flux version
   gitops version
 
-  To learn more, you can find our documentation at https://docs.gitops.weave.works/
+  To learn more, you can find our documentation at https://docs.gitops.weaveworks.org/
 `,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			// Sync flag values and env vars.
@@ -102,7 +103,7 @@ func RootCmd() *cobra.Command {
 
 			gitopsConfig, err = config.GetConfig(false)
 			if err != nil {
-				fmt.Fprintln(os.Stderr, "To improve our product, we would like to collect analytics data. You can read more about what data we collect here: https://docs.gitops.weave.works/docs/feedback-and-telemetry/")
+				fmt.Fprintln(os.Stderr, "To improve our product, we would like to collect analytics data. You can read more about what data we collect here: https://docs.gitops.weaveworks.org/docs/feedback-and-telemetry/")
 
 				enableAnalytics := false
 
@@ -120,10 +121,8 @@ func RootCmd() *cobra.Command {
 					enableAnalytics = true
 				}
 
-				seed := time.Now().UnixNano()
-
 				gitopsConfig = &config.GitopsCLIConfig{
-					UserID:    config.GenerateUserID(10, seed),
+					UserID:    config.GenerateUserID(10, rand.Uint64()), // #nosec G404
 					Analytics: enableAnalytics,
 				}
 

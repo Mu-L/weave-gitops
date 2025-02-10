@@ -13,7 +13,7 @@ Built upon the core tenets of continuous integration and continuous delivery (CI
 
 [Flagger](https://docs.flagger.app/) is a progressive delivery operator for Kubernetes and part of the Flux family of open source projects. It reduces the risk of introducing new software versions and automates production releases to improve your time to delivery. Flagger implements deployment strategies—canary releases, A/B testing, Blue/Green mirroring—using a service mesh (App Mesh, Istio, Linkerd, Kuma, Open Service Mesh) or an ingress controller (Contour, Gloo, NGINX, Skipper, Traefik, APISIX) for traffic routing. For release analysis, Flagger can query Prometheus, InfluxDB, Datadog, New Relic, CloudWatch, Stackdriver, or Graphite. For alerting it uses Slack, MS Teams, Discord, and Rocket. Using Flux allows us to manage our cluster applications in a declarative way through changes in a Git repository.
 
-If you're using Weave GitOps Enterprise, the Applications > Delivery view of the UI provides an "at a glance" view so that you can understand the status of your progressive delivery rollouts across a fleet of connected clusters. This removes the cognitive overhead of having to know which objects to query and where they are located. You can also drill down into each rollout to understand its status and configuration, and view near-to-realtime data on any summary or details page. Lastly, it includes a flagger-nginx [Profile](https://docs.gitops.weave.works/docs/next/cluster-management/profiles/) to help you quickly get started without having to configure a service mesh.
+If you're using Weave GitOps Enterprise, the Applications > Delivery view of the UI provides an "at a glance" view so that you can understand the status of your progressive delivery rollouts across a fleet of connected clusters. This removes the cognitive overhead of having to know which objects to query and where they are located. You can also drill down into each rollout to understand its status and configuration, and view near-to-realtime data on any summary or details page. Lastly, it includes a flagger-nginx [Profile](https://docs.gitops.weaveworks.org/docs/next/cluster-management/profiles/) to help you quickly get started without having to configure a service mesh.
 
 ![Applications Delivery view](/img/dashboard-applications-delivery.png)
 
@@ -77,7 +77,8 @@ Let's add the three manifests for Linkerd components under the `./linkerd` direc
 - A `HelmRelease` resource to install the latest version of Linkerd from the
 	`HelmRepository`
 
-<details><summary>Expand to see and copy-paste the three Linkerd manifests to add</summary>
+<details>
+<summary>Expand to see and copy-paste the three Linkerd manifests to add</summary>
 
 ```yaml title="linkerd/namespace.yaml"
 ---
@@ -167,7 +168,8 @@ Next, add the following manifests. The first file instructs Kustomize to patch a
 `HelmRelease` manifests. The second file is a `Kustomization` that references all the
 other `linkerd` resource files.
 
-<details><summary>Expand to see the Linkerd Kustomization manifests</summary>
+<details>
+<summary>Expand to see the Linkerd Kustomization manifests</summary>
 
 ```yaml title="linkerd/kustomizeconfig.yaml"
 nameReference:
@@ -260,7 +262,8 @@ Now add under this directory the three resource manifests for Flagger:
 	tester app (which generates synthetic traffic during the
 	analysis phase), from that `HelmRepository`
 
-<details><summary>Expand to see the three Flagger resource manifests</summary>
+<details>
+<summary>Expand to see the three Flagger resource manifests</summary>
 
 ```yaml title="flagger/namespace.yaml"
 ---
@@ -325,7 +328,8 @@ spec:
 Now add the following Kustomization file. It references all of the previous files that you've
 added:
 
-<details><summary>Expand to see the Flagger Kustomization manifest</summary>
+<details>
+<summary>Expand to see the Flagger Kustomization manifest</summary>
 
 ```yaml title="flagger/kustomization.yaml"
 ---
@@ -382,7 +386,8 @@ Create a new `test` directory and add these three canary resource manifests unde
 
 We don't need to define a service resource. This is specified within the canary definition and created by Flagger.
 
-<details><summary>Expand to see the three canary resource manifests</summary>
+<details>
+<summary>Expand to see the three canary resource manifests</summary>
 
 ```yaml title="test/namespace.yaml"
 ---
@@ -566,7 +571,8 @@ spec:
 
 Add a Kustomization file to apply all resources to the `test` namespace:
 
-<details><summary>Expand to see the Canary Kustomization manifest</summary>
+<details>
+<summary>Expand to see the Canary Kustomization manifest</summary>
 
 ```yaml title="test/kustomization.yaml"
 ---

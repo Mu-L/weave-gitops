@@ -5,24 +5,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"regexp"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
-	sourcev1b2 "github.com/fluxcd/source-controller/api/v1beta2"
-
-	"github.com/weaveworks/weave-gitops/pkg/compositehash"
-
+	sourcev1 "github.com/fluxcd/source-controller/api/v1"
 	"github.com/minio/minio-go/v7"
+	//nolint:gci
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
 	coretypes "github.com/weaveworks/weave-gitops/core/server/types"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/compositehash"
 	"github.com/weaveworks/weave-gitops/pkg/logger"
 	"github.com/weaveworks/weave-gitops/pkg/run/constants"
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
+	//nolint:gci
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -346,12 +348,7 @@ func getPodLogs(ctx context.Context, nextToken string, minioClient s3Reader, buc
 		lastToken = obj.Key
 	}
 
-	var logSources []string
-	for k := range tmpLogSources {
-		logSources = append(logSources, k)
-	}
-	sort.Strings(logSources)
-
+	logSources := slices.Sorted(maps.Keys(tmpLogSources))
 	return logs, lastToken, logSources, nil
 }
 
@@ -421,7 +418,7 @@ func getBucketConnectionInfo(ctx context.Context, clusterName, fluxNamespace str
 	}
 
 	// get bucket source
-	bucket := sourcev1b2.Bucket{
+	bucket := sourcev1.Bucket{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      constants.RunDevBucketName,
 			Namespace: fluxNamespace,

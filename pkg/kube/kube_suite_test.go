@@ -1,14 +1,13 @@
 package kube_test
 
 import (
-	"math/rand"
 	"testing"
-	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/weaveworks/weave-gitops/pkg/testutils"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/weaveworks/weave-gitops/pkg/testutils"
 )
 
 var (
@@ -38,7 +37,3 @@ var _ = BeforeSuite(func() {
 var _ = AfterSuite(func() {
 	cleanupK8s()
 })
-
-func init() {
-	rand.New(rand.NewSource(time.Now().UnixNano()))
-}

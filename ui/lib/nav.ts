@@ -7,7 +7,7 @@ import { NoNamespace, PageRoute, V2Routes } from "./types";
 // This keeps the nav element highlighted if we are on a child page.
 // Example: /sources and /git_repo will both show the "Sources" nav as selected.
 export const getParentNavValue = (
-  path: string
+  path: string,
 ): V2Routes | PageRoute | boolean => {
   const [, currentPage] = _.split(path, "/");
   switch (`/${currentPage}`) {
@@ -62,7 +62,7 @@ export const getParentNavValue = (
 };
 
 export const getParentNavRouteValue = (
-  path: string
+  path: string,
 ): V2Routes | PageRoute | boolean => {
   const [, currentPage] = _.split(path, "/");
 
@@ -118,16 +118,30 @@ const pageTitles = {
   [V2Routes.FluxRuntime]: "Flux Runtime",
   [V2Routes.Notifications]: "Notifications",
   [V2Routes.ImageAutomation]: "Image Automations",
+  [V2Routes.ImageAutomationUpdatesDetails]: "Image Automation Updates",
+  [V2Routes.ImageAutomationRepositoryDetails]: "Image Automation Repositories",
   [V2Routes.ImagePolicies]: "Image Policies",
+  [V2Routes.ImagePolicyDetails]: "Image Policy Details",
+  [V2Routes.PolicyDetailsPage]: "Policy Details",
   [V2Routes.ImageUpdates]: "Image Updates",
   [V2Routes.ImageRepositories]: "Image Repositories",
   [V2Routes.PolicyViolationDetails]: "Violation Logs",
   [V2Routes.UserInfo]: "User Info",
   [V2Routes.Policies]: "Policies",
+  [V2Routes.Runtime]: "Runtime",
+  [V2Routes.Provider]: "Provider",
+  [V2Routes.GitRepo]: "Git Repository",
+  [V2Routes.Bucket]: "Bucket",
+  [V2Routes.HelmRepo]: "Helm Repository",
+  [V2Routes.HelmChart]: "Helm Chart",
+  [V2Routes.Kustomization]: "Kustomization",
+  [V2Routes.HelmRelease]: "Helm Release",
+  [V2Routes.OCIRepository]: "OCI Repository",
+  [V2Routes.NotImplemented]: "Not Implemented",
 };
 
 export const getPageLabel = (route: V2Routes): string => {
-  return pageTitles[route];
+  return pageTitles[route] || "";
 };
 
 export const formatURL = (page: string, query: any = {}) => {
@@ -138,7 +152,7 @@ export const formatSourceURL = (
   kind: string,
   name: string,
   namespace: string = NoNamespace,
-  clusterName: string
+  clusterName: string,
 ) => {
   return formatURL(objectTypeToRoute(Kind[kind]), {
     name,

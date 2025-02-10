@@ -1,17 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Metadata snapshots renders nothing without data 1`] = `
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c0 {
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: start;
   gap: 12px;
   width: 100%;
@@ -22,97 +15,51 @@ exports[`Metadata snapshots renders nothing without data 1`] = `
 }
 
 <div
-  className="c0 c1 Metadata"
-/>
+    class="c0 c1 Metadata"
+  />
+</DocumentFragment>
 `;
 
 exports[`Metadata snapshots renders with data 1`] = `
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c0 {
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: start;
   gap: 12px;
   width: 100%;
 }
 
 .c2 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: start;
   gap: 8px;
 }
 
 .c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: start;
   gap: 8px;
   width: 100%;
 }
 
 .c5 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   gap: 8px;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
   justify-content: center;
 }
 
 .c10 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: start;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
   align-items: start;
   gap: 4px;
   width: 100%;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
   justify-content: flex-start;
 }
 
@@ -162,7 +109,6 @@ exports[`Metadata snapshots renders with data 1`] = `
 }
 
 .c8 {
-  -webkit-text-decoration: none;
   text-decoration: none;
 }
 
@@ -170,7 +116,7 @@ exports[`Metadata snapshots renders with data 1`] = `
   padding: 8px 12px;
   border-radius: 15px;
   white-space: nowrap;
-  background-color: #F6F7F9;
+  background-color: #C2C9D7;
 }
 
 .c1 {
@@ -178,316 +124,246 @@ exports[`Metadata snapshots renders with data 1`] = `
 }
 
 <div
-  className="c0 c1 Metadata"
->
-  <div
-    className="c2"
+    class="c0 c1 Metadata"
   >
-    <span
-      className="c3"
-      color="neutral30"
-      size="large"
-    >
-      Metadata
-    </span>
     <div
-      className="c4"
+      class="c2"
     >
-      <div
-        className="c5"
-        data-testid="Created By"
+      <span
+        class="c3"
       >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Created By
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          Value 2
-        </span>
-      </div>
+        Metadata
+      </span>
       <div
-        className="c5"
-        data-testid="CreatedBy"
+        class="c4"
       >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
+        <div
+          class="c5"
+          data-testid="Created By"
         >
-          CreatedBy
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          Value 3
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="CreatedBy"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          CreatedBy
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          Value 4
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Description"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Description
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          Value 1
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Html"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Html
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          &lt;p&gt;&lt;b&gt;html&lt;/b&gt;&lt;/p&gt;
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Link To Google"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Link To Google
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          <a
-            className="c8 Link"
-            href="https://google.com"
-            rel="noreferrer"
-            target="_blank"
+          <span
+            class="c6"
           >
-            <span
-              className="c9"
-              color="primary"
-              size="medium"
+            Created By:
+          </span>
+          <span
+            class="c7"
+          >
+            Value 2
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="CreatedBy"
+        >
+          <span
+            class="c6"
+          >
+            CreatedBy:
+          </span>
+          <span
+            class="c7"
+          >
+            Value 3
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="CreatedBy"
+        >
+          <span
+            class="c6"
+          >
+            CreatedBy:
+          </span>
+          <span
+            class="c7"
+          >
+            Value 4
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Description"
+        >
+          <span
+            class="c6"
+          >
+            Description:
+          </span>
+          <span
+            class="c7"
+          >
+            Value 1
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Html"
+        >
+          <span
+            class="c6"
+          >
+            Html:
+          </span>
+          <span
+            class="c7"
+          >
+            &lt;p&gt;&lt;b&gt;html&lt;/b&gt;&lt;/p&gt;
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Link To Google"
+        >
+          <span
+            class="c6"
+          >
+            Link To Google:
+          </span>
+          <span
+            class="c7"
+          >
+            <a
+              class="c8 Link"
+              href="https://google.com"
+              rel="noreferrer"
+              target="_blank"
             >
-              https://google.com
-            </span>
-          </a>
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Multi Lines"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
+              <span
+                class="c9"
+              >
+                https://google.com
+              </span>
+            </a>
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Multi Lines"
         >
-          Multi Lines
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          This is first line
+          <span
+            class="c6"
+          >
+            Multi Lines:
+          </span>
+          <span
+            class="c7"
+          >
+            This is first line
 This is second line
 
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Version"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Version"
         >
-          Version
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          some version
-        </span>
-      </div>
-    </div>
-  </div>
-  <div
-    className="c2"
-  >
-    <span
-      className="c3"
-      color="neutral30"
-      size="large"
-    >
-      Artifact Metadata
-    </span>
-    <div
-      className="c4"
-    >
-      <div
-        className="c5"
-        data-testid="Description"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Description
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          Value 1
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Html"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Html
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          &lt;p&gt;&lt;b&gt;html&lt;/b&gt;&lt;/p&gt;
-        </span>
-      </div>
-      <div
-        className="c5"
-        data-testid="Link To Google"
-      >
-        <span
-          className="c6"
-          color="neutral30"
-          size="medium"
-        >
-          Link To Google
-          :
-        </span>
-        <span
-          className="c7"
-          color="neutral40"
-          size="medium"
-        >
-          <a
-            className="c8 Link"
-            href="https://google.com"
-            rel="noreferrer"
-            target="_blank"
+          <span
+            class="c6"
           >
-            <span
-              className="c9"
-              color="primary"
-              size="medium"
+            Version:
+          </span>
+          <span
+            class="c7"
+          >
+            some version
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c2"
+    >
+      <span
+        class="c3"
+      >
+        Artifact Metadata
+      </span>
+      <div
+        class="c4"
+      >
+        <div
+          class="c5"
+          data-testid="Description"
+        >
+          <span
+            class="c6"
+          >
+            Description:
+          </span>
+          <span
+            class="c7"
+          >
+            Value 1
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Html"
+        >
+          <span
+            class="c6"
+          >
+            Html:
+          </span>
+          <span
+            class="c7"
+          >
+            &lt;p&gt;&lt;b&gt;html&lt;/b&gt;&lt;/p&gt;
+          </span>
+        </div>
+        <div
+          class="c5"
+          data-testid="Link To Google"
+        >
+          <span
+            class="c6"
+          >
+            Link To Google:
+          </span>
+          <span
+            class="c7"
+          >
+            <a
+              class="c8 Link"
+              href="https://google.com"
+              rel="noreferrer"
+              target="_blank"
             >
-              https://google.com
-            </span>
-          </a>
+              <span
+                class="c9"
+              >
+                https://google.com
+              </span>
+            </a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="c2"
+    >
+      <span
+        class="c3"
+      >
+        Labels
+      </span>
+      <div
+        class="c10"
+      >
+        <span
+          class="c11 c12"
+        >
+          label: label
+        </span>
+        <span
+          class="c11 c12"
+        >
+          goose: goose
         </span>
       </div>
     </div>
   </div>
-  <div
-    className="c2"
-  >
-    <span
-      className="c3"
-      color="neutral30"
-      size="large"
-    >
-      Labels
-    </span>
-    <div
-      className="c10"
-    >
-      <span
-        className="c11 c12"
-        size="medium"
-      >
-        label
-        : 
-        label
-      </span>
-      <span
-        className="c11 c12"
-        size="medium"
-      >
-        goose
-        : 
-        goose
-      </span>
-    </div>
-  </div>
-</div>
+</DocumentFragment>
 `;

@@ -36,7 +36,7 @@ execPrint(
 );
 execPrint(`kubectl apply -f - <<EOF
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
+apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   annotations:
@@ -49,10 +49,11 @@ metadata:
   name: ww-gitops
   namespace: flux-system
 spec:
-  interval: 1h0m0s
-  url: https://helm.gitops.weave.works
+  type: oci
+  interval: 10m0s
+  url: oci://ghcr.io/weaveworks/charts
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ww-gitops
@@ -220,7 +221,7 @@ EOF`);
 
     execPrint(`kubectl apply -f - <<EOF
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: podinfo

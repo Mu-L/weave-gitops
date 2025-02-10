@@ -1,6 +1,7 @@
 # UI build
-FROM node:16-bullseye AS ui
-RUN apt-get update -y && apt-get install -y build-essential
+FROM node:22-bookworm@sha256:5145c882f9e32f07dd7593962045d97f221d57a1b609f5bf7a807eb89deff9d6 AS ui
+RUN apt-get update -y && apt-get install -y build-essential python3 g++
+RUN npm install -g node-gyp
 RUN mkdir -p /home/app && chown -R node:node /home/app
 WORKDIR /home/app
 USER node
@@ -10,12 +11,14 @@ COPY --chown=node:node Makefile /home/app/
 COPY --chown=node:node tsconfig.json /home/app/
 COPY --chown=node:node .parcelrc /home/app/
 COPY --chown=node:node .npmrc /home/app/
+COPY --chown=node:node .yarn /home/app/.yarn
+COPY --chown=node:node .yarnrc.yml /home/app/
 RUN make node_modules
 COPY --chown=node:node ui /home/app/ui
-RUN --mount=type=cache,target=/home/app/ui/.parcel-cache make ui
+RUN make ui
 
 # Go build
-FROM golang:1.20 AS go-build
+FROM golang:1.23.6@sha256:927112936d6b496ed95f55f362cc09da6e3e624ef868814c56d55bd7323e0959 AS go-build
 
 # Add known_hosts entries for GitHub and GitLab
 RUN mkdir ~/.ssh
@@ -24,6 +27,9 @@ RUN ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
 
 COPY Makefile /app/
 WORKDIR /app
+RUN go env -w GOCACHE=/go-cache
+RUN --mount=type=cache,target=/gomod-cache \
+    go env -w GOMODCACHE=/gomod-cache
 COPY go.* /app/
 RUN go mod download
 COPY core /app/core
@@ -37,10 +43,11 @@ COPY api /app/api
 ARG GIT_COMMIT="_unset_"
 ARG LDFLAGS="-X localbuild=true"
 
-RUN --mount=type=cache,target=/root/.cache/go-build LDFLAGS=${LDFLAGS##-X localbuild=true} GIT_COMMIT=$GIT_COMMIT make gitops-server
+RUN --mount=type=cache,target=/gomod-cache --mount=type=cache,target=/go-cache \
+    LDFLAGS=${LDFLAGS##-X localbuild=true} GIT_COMMIT=$GIT_COMMIT make gitops-server
 
 #  Distroless
-FROM gcr.io/distroless/base as runtime
+FROM gcr.io/distroless/base@sha256:74ddbf52d93fafbdd21b399271b0b4aac1babf8fa98cab59e5692e01169a1348 AS runtime
 COPY --from=ui /home/app/bin/dist/ /dist/
 COPY --from=go-build /app/bin/gitops-server /gitops-server
 COPY --from=go-build /root/.ssh/known_hosts /root/.ssh/known_hosts

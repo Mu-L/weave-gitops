@@ -4,9 +4,9 @@ import {
   Menu,
   MenuItem,
   Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { Auth } from "../contexts/AuthContext";
 import { V2Routes } from "../lib/types";
@@ -39,9 +39,8 @@ const PersonButton = styled(IconButton)<{ open?: boolean }>`
     padding: ${(props) => props.theme.spacing.xs};
     background-color: ${(props) => props.theme.colors.neutralGray};
     color: ${(props) => props.theme.colors.neutral30};
-    :hover {
-      background-color: ${(props) => props.theme.colors.neutral00};
-      color: ${(props) => props.theme.colors.primary10};
+    &:hover {
+      background-color: ${(props) => props.theme.colors.blueWithOpacity};
     }
   }
 `;
@@ -52,7 +51,7 @@ type Props = {
 };
 
 function UserSettings({ className, darkModeEnabled = true }: Props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { userInfo, logOut } = React.useContext(Auth);
 
@@ -70,7 +69,7 @@ function UserSettings({ className, darkModeEnabled = true }: Props) {
       <Tooltip title="Docs" enterDelay={500} enterNextDelay={500}>
         <Link
           as={PersonButton}
-          href="https://docs.gitops.weave.works/"
+          href="https://docs.gitops.weaveworks.org/"
           target="_blank"
           rel="noreferrer"
         >
@@ -94,9 +93,9 @@ function UserSettings({ className, darkModeEnabled = true }: Props) {
         open={open}
         onClose={handleClose}
         onClick={handleClose}
-        transformOrigin={{ horizontal: 150, vertical: -80 }}
+        transformOrigin={{ horizontal: 90, vertical: -10 }}
       >
-        <MenuItem onClick={() => history.push(V2Routes.UserInfo)}>
+        <MenuItem onClick={() => navigate(V2Routes.UserInfo)}>
           Hello, {userInfo?.id}
         </MenuItem>
         <MenuItem className="logout" onClick={() => logOut()}>

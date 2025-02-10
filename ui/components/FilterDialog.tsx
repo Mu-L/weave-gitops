@@ -1,4 +1,4 @@
-import { Checkbox, List, ListItem, ListItemIcon } from "@material-ui/core";
+import { Checkbox, List, ListItem, ListItemIcon } from "@mui/material";
 import _ from "lodash";
 import * as React from "react";
 import styled from "styled-components";
@@ -51,7 +51,7 @@ const FilterSection = ({
   onSectionSelect,
 }: FilterSectionProps) => {
   const compoundKeys = options.map(
-    (option) => `${header}${filterSeparator}${option}`
+    (option) => `${header}${filterSeparator}${option}`,
   );
   // every on an empty list is true so check that too
   const all =
@@ -112,7 +112,7 @@ export interface Props {
 
 export function selectionsToFilters(
   values: FilterSelections,
-  filterList: FilterConfig
+  filterList: FilterConfig,
 ): FilterConfig {
   const out = {};
   _.each(values, (v, k) => {

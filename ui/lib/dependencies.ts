@@ -9,7 +9,7 @@ import {
 // or are dependencies of the current node.
 export function getNeighborNodes(
   nodes: FluxObjectNodesMap,
-  currentNode: FluxObjectNode
+  currentNode: FluxObjectNode,
 ): FluxObjectNode[] {
   const dependencyNodes = currentNode.dependsOn
     .map((dependency) => {
@@ -51,11 +51,11 @@ export function getNeighborNodes(
 // getGraphNodes returns all nodes in the current node's dependency tree, including the current node.
 export function getGraphNodes(
   nodes: FluxObjectNodesMap,
-  automation: Automation
+  automation: Automation | undefined,
 ): FluxObjectNode[] {
   // Find node, corresponding to the automation.
   const currentNode =
-    nodes[makeObjectId(automation.namespace, automation.name)];
+    nodes[makeObjectId(automation?.namespace, automation?.name)];
 
   if (!currentNode) {
     return [];
@@ -73,8 +73,12 @@ export function getGraphNodes(
   while (nodesToExplore.length > 0) {
     const node = nodesToExplore.shift();
 
+    if (!node) {
+      continue;
+    }
+
     const newNodes = getNeighborNodes(nodes, node).filter(
-      (n) => !visitedNodes[n.id]
+      (n) => !visitedNodes[n.id],
     );
 
     for (const n of newNodes) {

@@ -8,6 +8,7 @@ import (
 	"github.com/fluxcd/go-git-providers/gitprovider"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/weaveworks/weave-gitops/pkg/vendorfakes/fakegitprovider"
 )
 
@@ -28,7 +29,7 @@ var _ = Describe("Org Provider", func() {
 		repoURL RepoURL
 	)
 
-	var _ = BeforeEach(func() {
+	_ = BeforeEach(func() {
 		commitClient = &fakegitprovider.CommitClient{}
 		branchesClient = &fakegitprovider.BranchClient{}
 		pullRequestsClient = &fakegitprovider.PullRequestClient{}

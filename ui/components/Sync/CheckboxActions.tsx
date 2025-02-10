@@ -1,6 +1,6 @@
 import _ from "lodash";
 import * as React from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import styled from "styled-components";
 import { useSyncFluxObject } from "../../hooks/automations";
 import { useToggleSuspend } from "../../hooks/flux";
@@ -35,7 +35,7 @@ const noSource = {
 function createSuspendHandler(
   reqObjects: ObjectRef[],
   suspend: boolean,
-  suspendMessage: string
+  suspendMessage: string,
 ) {
   const result = useToggleSuspend(
     {
@@ -46,7 +46,7 @@ function createSuspendHandler(
     reqObjects[0]?.kind === "HelmRelease" ||
       reqObjects[0]?.kind === "Kustomization"
       ? "automations"
-      : "sources"
+      : "sources",
   );
   return result;
 }
@@ -83,7 +83,7 @@ function CheckboxActions({ className, checked = [], rows = [] }: Props) {
       <SyncControls
         className={className}
         hideSyncOptions={noSource[location.pathname]}
-        syncLoading={sync.isLoading}
+        syncLoading={sync.isPending}
         syncDisabled={disableButtons}
         suspendDisabled={disableButtons}
         resumeDisabled={disableButtons}

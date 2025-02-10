@@ -1,5 +1,5 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useMutation, useQuery } from "react-query";
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import {
   ListObjectsResponse,
@@ -29,13 +29,13 @@ export function useListAutomations(
   opts: ReactQueryOptions<Res, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
 
-  return useQuery<Res, RequestError>(
-    ["automations", namespace],
-    () => {
+  return useQuery<Res, RequestError>({
+    queryKey: ["automations", namespace],
+    queryFn: () => {
       const p = [Kind.HelmRelease, Kind.Kustomization].map((kind) =>
         api
           .ListObjects({ namespace, kind })
@@ -43,7 +43,7 @@ export function useListAutomations(
             if (!response.objects) response.objects = [];
             if (!response.errors) response.errors = [];
             return { kind, response };
-          })
+          }),
       );
       return Promise.all(p).then((responses) => {
         const final: Res = {
@@ -54,21 +54,21 @@ export function useListAutomations(
         for (const { kind, response } of responses) {
           final.result.push(
             ...response.objects.map(
-              (o) => convertResponse(kind, o) as Automation
-            )
+              (o) => convertResponse(kind, o) as Automation,
+            ),
           );
           final.errors.push(
             ...response.errors.map((o) => {
               return { ...o, kind };
-            })
+            }),
           );
           final.searchedNamespaces[kind] = response.searchedNamespaces;
         }
         return final;
       });
     },
-    opts
-  );
+    ...opts,
+  });
 }
 
 export function useSyncFluxObject(objs: ObjectRef[]) {
@@ -77,7 +77,9 @@ export function useSyncFluxObject(objs: ObjectRef[]) {
     SyncFluxObjectResponse,
     RequestError,
     SyncFluxObjectRequest
-  >(({ withSource }) => api.SyncFluxObject({ objects: objs, withSource }), {
+  >({
+    mutationFn: ({ withSource }) =>
+      api.SyncFluxObject({ objects: objs, withSource }),
     onSuccess: () => notifySuccess("Sync request successful!"),
     onError: (error) => notifyError(error.message),
   });

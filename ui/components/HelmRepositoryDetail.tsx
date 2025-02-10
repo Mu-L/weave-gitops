@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import { useFeatureFlags } from "../hooks/featureflags";
 import { Kind } from "../lib/api/core/types.pb";
@@ -31,7 +32,10 @@ function HelmRepositoryDetail({
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={helmRepository?.clusterName} />,
+          <ClusterDashboardLink
+            key={helmRepository.uid}
+            clusterName={helmRepository?.clusterName}
+          />,
         ],
       ]
     : [];
@@ -45,7 +49,12 @@ function HelmRepositoryDetail({
       info={[
         ["Kind", Kind.HelmRepository],
         ["Repository Type", helmRepository.repositoryType.toLowerCase()],
-        ["URL", <Link href={helmRepository.url}>{helmRepository.url}</Link>],
+        [
+          "URL",
+          <Link key={helmRepository.uid} href={helmRepository.url}>
+            {helmRepository.url}
+          </Link>,
+        ],
         [
           "Last Updated",
           helmRepository.lastUpdatedAt ? (
@@ -54,7 +63,13 @@ function HelmRepositoryDetail({
             "-"
           ),
         ],
-        ["Interval", <Interval interval={helmRepository.interval} />],
+        [
+          "Interval",
+          <Interval
+            key={helmRepository.uid}
+            interval={helmRepository.interval}
+          />,
+        ],
         ...clusterInfo,
         ["Namespace", helmRepository.namespace],
         ...tenancyInfo,

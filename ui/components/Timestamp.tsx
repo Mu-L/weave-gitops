@@ -1,4 +1,4 @@
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import { DateTime } from "luxon";
 import * as React from "react";
 import styled from "styled-components";
@@ -15,7 +15,7 @@ function Timestamp({ className, time, hideSeconds, tooltip }: Props) {
 
   let relativeTime = dateTime.toRelative();
   const fullTime = dateTime.toLocaleString(
-    DateTime.DATETIME_SHORT_WITH_SECONDS
+    DateTime.DATETIME_SHORT_WITH_SECONDS,
   );
 
   if (hideSeconds && relativeTime.includes("second")) {

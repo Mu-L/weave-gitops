@@ -4,19 +4,19 @@ import (
 	"context"
 	"testing"
 
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
-	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta1"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
+	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta2"
 	reflectorv1 "github.com/fluxcd/image-reflector-controller/api/v1beta2"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	sourcev1 "github.com/fluxcd/source-controller/api/v1"
-	sourcev1b2 "github.com/fluxcd/source-controller/api/v1beta2"
 	. "github.com/onsi/gomega"
-	api "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"google.golang.org/grpc/metadata"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	api "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/kube"
 )
 
 func TestSuspend_Suspend(t *testing.T) {
@@ -32,7 +32,7 @@ func TestSuspend_Suspend(t *testing.T) {
 	})
 	g.Expect(err).NotTo(HaveOccurred())
 
-	c := makeGRPCServer(k8sEnv.Rest, t)
+	c := makeGRPCServer(ctx, t, k8sEnv.Rest)
 
 	ns := newNamespace(ctx, k, g)
 
@@ -51,13 +51,13 @@ func TestSuspend_Suspend(t *testing.T) {
 			obj:        gr,
 		},
 		{
-			kind:       sourcev1b2.HelmRepositoryKind,
-			apiVersion: sourcev1b2.GroupVersion.String(),
+			kind:       sourcev1.HelmRepositoryKind,
+			apiVersion: sourcev1.GroupVersion.String(),
 			obj:        hr,
 		},
 		{
-			kind:       sourcev1b2.BucketKind,
-			apiVersion: sourcev1b2.GroupVersion.String(),
+			kind:       sourcev1.BucketKind,
+			apiVersion: sourcev1.GroupVersion.String(),
 			obj:        makeBucket("bucket-1", *ns),
 		},
 		{
@@ -144,16 +144,17 @@ func TestSuspend_Suspend(t *testing.T) {
 		md := metadata.Pairs(MetadataUserKey, "anne", MetadataGroupsKey, "system:masters")
 		outgoingCtx := metadata.NewOutgoingContext(ctx, md)
 		_, err = c.ToggleSuspendResource(outgoingCtx, &api.ToggleSuspendResourceRequest{
-
 			Objects: []*api.ObjectRef{{
 				Kind:        sourcev1.GitRepositoryKind,
 				Name:        "fakeName",
 				Namespace:   "fakeNamespace",
 				ClusterName: "Default",
-			}, {Kind: sourcev1.GitRepositoryKind,
+			}, {
+				Kind:        sourcev1.GitRepositoryKind,
 				Name:        "fakeName2",
 				Namespace:   "fakeNamespace2",
-				ClusterName: "Default2"}},
+				ClusterName: "Default2",
+			}},
 			Suspend: true,
 		})
 
@@ -162,6 +163,7 @@ func TestSuspend_Suspend(t *testing.T) {
 }
 
 func getUnstructuredObj(t *testing.T, k client.Client, name types.NamespacedName, kind, apiVersion string) *unstructured.Unstructured {
+	t.Helper()
 	unstructuredObj := &unstructured.Unstructured{}
 	unstructuredObj.SetKind(kind)
 	unstructuredObj.SetAPIVersion(apiVersion)
@@ -172,10 +174,11 @@ func getUnstructuredObj(t *testing.T, k client.Client, name types.NamespacedName
 	return unstructuredObj
 }
 
-// checkSuspendAnnotations checks for the existance of suspend annotations
+// checkSuspendAnnotations checks for the existence of suspend annotations
 // passes if suspended and annotations exist, or not suspended and annotations don't exist
 // if annotations exist, the principal is checked in the annotation for suspended-by
 func checkSuspendAnnotations(t *testing.T, principalID string, annotations map[string]string, name types.NamespacedName, suspend bool) {
+	t.Helper()
 	if suspend {
 		// suspended and annotations exist check
 		if suspendedBy, ok := annotations["metadata.weave.works/suspended-by"]; ok {

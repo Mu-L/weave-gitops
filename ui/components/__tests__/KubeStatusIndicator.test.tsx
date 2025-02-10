@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/dom";
+import { render } from "@testing-library/react";
 import "jest-styled-components";
 import React from "react";
-import renderer from "react-test-renderer";
 import { withTheme } from "../../lib/test-utils";
 import KubeStatusIndicator, {
   createSyntheticCondition,
@@ -108,7 +108,7 @@ describe("KubeStatusIndicator", () => {
     ];
 
     render(
-      withTheme(<KubeStatusIndicator conditions={conditions} suspended />)
+      withTheme(<KubeStatusIndicator conditions={conditions} suspended />),
     );
     const msg = screen.getByText("Suspended");
     expect(msg).toBeTruthy();
@@ -206,9 +206,9 @@ describe("KubeStatusIndicator", () => {
           timestamp: "2022-03-03 17:00:38 +0000 UTC",
         },
       ];
-      const tree = renderer
-        .create(withTheme(<KubeStatusIndicator conditions={conditions} />))
-        .toJSON();
+      const tree = render(
+        withTheme(<KubeStatusIndicator conditions={conditions} />),
+      ).asFragment();
       expect(tree).toMatchSnapshot();
     });
     it("renders error", () => {
@@ -221,11 +221,9 @@ describe("KubeStatusIndicator", () => {
           timestamp: "2022-03-03 17:00:38 +0000 UTC",
         },
       ];
-      const tree = renderer
-        .create(
-          withTheme(<KubeStatusIndicator conditions={conditions} short />)
-        )
-        .toJSON();
+      const tree = render(
+        withTheme(<KubeStatusIndicator conditions={conditions} short />),
+      ).asFragment();
       expect(tree).toMatchSnapshot();
     });
     it("renders with noText prop", () => {
@@ -238,11 +236,9 @@ describe("KubeStatusIndicator", () => {
           timestamp: "2022-03-03 17:00:38 +0000 UTC",
         },
       ];
-      const tree = renderer
-        .create(
-          withTheme(<KubeStatusIndicator conditions={conditions} noText />)
-        )
-        .toJSON();
+      const tree = render(
+        withTheme(<KubeStatusIndicator conditions={conditions} noText />),
+      ).asFragment();
       expect(tree).toMatchSnapshot();
     });
   });

@@ -26,13 +26,13 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/weaveworks/weave-gitops/pkg/git/wrapper"
-
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport"
+
+	"github.com/weaveworks/weave-gitops/pkg/git/wrapper"
 )
 
 type GoGit struct {
@@ -53,7 +53,6 @@ func New(auth transport.AuthMethod, wrapper wrapper.Git) Git {
 func (g *GoGit) Open(path string) (*gogit.Repository, error) {
 	g.path = path
 	repo, err := g.git.PlainOpen(path)
-
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +143,6 @@ func (g *GoGit) clone(ctx context.Context, path, url, branch string, depth int) 
 		Depth:         depth,
 		Tags:          gogit.NoTags,
 	})
-
 	if err != nil {
 		return nil, err
 	}

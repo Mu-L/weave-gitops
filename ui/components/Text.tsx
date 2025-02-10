@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// eslint-disable-next-line
 import { colors, fontSizes } from "../typedefs/styled";
 
 export interface TextProps {
@@ -51,5 +50,19 @@ const Text = styled.span<TextProps>`
 Text.defaultProps = {
   size: "medium",
 };
+Text.shouldForwardProp = (prop) =>
+  ![
+    "size",
+    "bold",
+    "semiBold",
+    "capitalize",
+    "italic",
+    "color",
+    "uppercase",
+    "noWrap",
+    "titleHeight",
+    "pointer",
+    "minWidth",
+  ].includes(prop);
 
 export default Text;

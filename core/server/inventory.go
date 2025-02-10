@@ -11,14 +11,10 @@ import (
 	"strings"
 	"sync"
 
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
-	"github.com/fluxcd/pkg/ssa"
+	"github.com/fluxcd/pkg/ssa/utils"
 	"github.com/go-logr/logr"
-	"github.com/weaveworks/weave-gitops/core/server/types"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/health"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -27,6 +23,11 @@ import (
 	"sigs.k8s.io/cli-utils/pkg/object"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
+
+	"github.com/weaveworks/weave-gitops/core/server/types"
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/health"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 // ObjectWithChildren is a recursive data structure containing a tree of Unstructured
@@ -179,7 +180,7 @@ func getHelmReleaseObjects(ctx context.Context, k8sClient client.Client, helmRel
 		return nil, err
 	}
 
-	var magicGzip = []byte{0x1f, 0x8b, 0x08}
+	magicGzip := []byte{0x1f, 0x8b, 0x08}
 	if bytes.Equal(byteData[0:3], magicGzip) {
 		r, err := gzip.NewReader(bytes.NewReader(byteData))
 		if err != nil {
@@ -201,7 +202,7 @@ func getHelmReleaseObjects(ctx context.Context, k8sClient client.Client, helmRel
 		return nil, fmt.Errorf("failed to decode the Helm storage object for HelmRelease '%s': %w", helmRelease.Name, err)
 	}
 
-	objects, err := ssa.ReadObjects(strings.NewReader(storage.Manifest))
+	objects, err := utils.ReadObjects(strings.NewReader(storage.Manifest))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read the Helm storage object for HelmRelease '%s': %w", helmRelease.Name, err)
 	}
@@ -286,7 +287,7 @@ func getObjectsWithChildren(ctx context.Context, defaultNS string, objects []*un
 				if !ok {
 					namespaced, err = apiutil.IsObjectNamespaced(&obj, k8sClient.Scheme(), k8sClient.RESTMapper())
 					if err != nil {
-						logger.Error(err, "failed to determine if %s is namespace scoped", obj.GetObjectKind().GroupVersionKind().Kind)
+						logger.Error(err, "failed to determine if resource is namespace scoped", "kind", obj.GetObjectKind().GroupVersionKind().Kind)
 						return
 					}
 
@@ -353,7 +354,7 @@ func getChildren(ctx context.Context, k8sClient client.Client, parentObj unstruc
 	}
 
 	if err := k8sClient.List(ctx, &listResult, client.InNamespace(parentObj.GetNamespace())); err != nil {
-		return nil, fmt.Errorf("could not get unstructured object: %s", err)
+		return nil, fmt.Errorf("could not get unstructured object: %w", err)
 	}
 
 	unstructuredChildren := []unstructured.Unstructured{}
@@ -478,19 +479,12 @@ func parseInventoryFromUnstructured(obj *unstructured.Unstructured) ([]*unstruct
 	return objects, nil
 }
 
-const helmSecretNameFmt = "sh.helm.release.v1.%s.v%v"
+const helmSecretNameFmt = "sh.helm.release.v1.%s.v%v" // #nosec G101
 
 func secretNameFromHelmRelease(helmRelease *helmv2.HelmRelease) *client.ObjectKey {
 	if latest := helmRelease.Status.History.Latest(); latest != nil {
 		return &client.ObjectKey{
 			Name:      fmt.Sprintf(helmSecretNameFmt, latest.Name, latest.Version),
-			Namespace: helmRelease.GetStorageNamespace(),
-		}
-	}
-
-	if latestRevision := helmRelease.Status.LastReleaseRevision; latestRevision > 0 {
-		return &client.ObjectKey{
-			Name:      fmt.Sprintf(helmSecretNameFmt, helmRelease.GetReleaseName(), latestRevision),
 			Namespace: helmRelease.GetStorageNamespace(),
 		}
 	}
@@ -501,10 +495,6 @@ func secretNameFromHelmRelease(helmRelease *helmv2.HelmRelease) *client.ObjectKe
 func defaultNSFromHelmRelease(helmRelease *helmv2.HelmRelease) string {
 	if latest := helmRelease.Status.History.Latest(); latest != nil {
 		return latest.Namespace
-	}
-
-	if latestRevision := helmRelease.Status.LastReleaseRevision; latestRevision > 0 {
-		return helmRelease.GetReleaseNamespace()
 	}
 
 	return ""

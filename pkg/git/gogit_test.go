@@ -9,16 +9,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-git/go-git/v5/plumbing/transport"
-	"github.com/weaveworks/weave-gitops/pkg/git/wrapper/wrapperfakes"
-
-	"github.com/weaveworks/weave-gitops/pkg/git/wrapper"
-
 	gogit "github.com/go-git/go-git/v5"
-
+	"github.com/go-git/go-git/v5/plumbing/transport"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+
 	"github.com/weaveworks/weave-gitops/pkg/git"
+	"github.com/weaveworks/weave-gitops/pkg/git/wrapper"
+	"github.com/weaveworks/weave-gitops/pkg/git/wrapper/wrapperfakes"
 )
 
 var (
@@ -104,7 +102,6 @@ var _ = Describe("ValidateAccess", func() {
 	})
 
 	It("should not fail on an empty repo", func() {
-
 		fakeGit.PlainCloneContextReturns(nil, transport.ErrEmptyRemoteRepository)
 
 		err := fakeGitClient.ValidateAccess(context.Background(), "https://github.com/githubtraining/hellogitworld", "master")
@@ -113,7 +110,6 @@ var _ = Describe("ValidateAccess", func() {
 	})
 
 	It("should fail with custom error", func() {
-
 		customError := errors.New("my-custom-error")
 
 		fakeGit.PlainCloneContextReturns(nil, customError)
@@ -124,7 +120,6 @@ var _ = Describe("ValidateAccess", func() {
 	})
 
 	It("should fail to create temporary directory", func() {
-
 		tempDirName := "-*/3486rw7f"
 
 		os.Setenv("TMPDIR", tempDirName)
@@ -137,7 +132,7 @@ var _ = Describe("ValidateAccess", func() {
 
 	It("fails to validate access to a possible private repository", func() {
 		err := gitClient.ValidateAccess(context.Background(), "https://github.com/notexisted/repo", "master")
-		Expect(err.Error()).Should(Equal("error validating git repo access authentication required"))
+		Expect(err.Error()).Should(Equal("error validating git repo access authentication required: Repository not found."))
 	})
 })
 
@@ -160,7 +155,7 @@ var _ = Describe("Read", func() {
 		Expect(content).To(Equal(fileContent))
 	})
 
-	It("Reads a file from a repo even if not commited", func() {
+	It("Reads a file from a repo even if not committed", func() {
 		_, err = gitClient.Init(dir, "https://github.com/github/gitignore", "master")
 		filePath := "/test.txt"
 		content := []byte("testing")
@@ -446,7 +441,6 @@ var _ = Describe("Remove", func() {
 
 var _ = Describe("Checkout", func() {
 	It("succeeds", func() {
-
 		_, err = gitClient.Clone(context.Background(), dir, "https://github.com/github/gitignore", "main")
 		Expect(err).ShouldNot(HaveOccurred())
 
@@ -463,7 +457,8 @@ var _ = Describe("Checkout", func() {
 			Author: git.Author{
 				Name:  "test",
 				Email: "test@test.com",
-			}},
+			},
+		},
 			func(s string) bool {
 				return true
 			})

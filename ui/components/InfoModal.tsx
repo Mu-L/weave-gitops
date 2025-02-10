@@ -1,4 +1,4 @@
-import { List, ListItem } from "@material-ui/core";
+import { List, ListItem } from "@mui/material";
 import React, { Dispatch, Fragment, SetStateAction } from "react";
 import styled from "styled-components";
 import { SearchedNamespaces } from "../lib/types";
@@ -38,7 +38,7 @@ function InfoModal({ searchedNamespaces, onCloseModal, open }: Props) {
                 </ListItem>
               ))}
             </Fragment>
-          )
+          ),
         )}
       </List>
     </OverflowWrapper>
@@ -50,8 +50,9 @@ function InfoModal({ searchedNamespaces, onCloseModal, open }: Props) {
       onClose={onClose}
       title="Searched namespaces"
       description="These are the namespaces that we've searched per cluster to retrieve the objects that you are seeing on this page."
-      children={content}
-    />
+    >
+      {content}
+    </Modal>
   );
 }
 
