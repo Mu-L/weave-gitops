@@ -1,36 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SyncActions snapshots hideSyncOptions 1`] = `
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c0 {
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   width: 100%;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
   justify-content: flex-start;
 }
 
 .c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
 }
 
@@ -46,8 +28,7 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 .c5 svg circle.path-fill,
 .c5 svg polyline.path-fill {
   fill: !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg path.stroke-fill,
@@ -57,8 +38,7 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 .c5 svg circle.stroke-fill,
 .c5 svg polyline.stroke-fill {
   stroke: !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg rect.rect-height {
@@ -67,14 +47,10 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 }
 
 .c5.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c5.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -94,9 +70,8 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 .c8 svg rect.path-fill,
 .c8 svg circle.path-fill,
 .c8 svg polyline.path-fill {
-  fill: #009CCC !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  fill: #009CCC!important;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c8 svg path.stroke-fill,
@@ -105,9 +80,8 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 .c8 svg rect.stroke-fill,
 .c8 svg circle.stroke-fill,
 .c8 svg polyline.stroke-fill {
-  stroke: #009CCC !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  stroke: #009CCC!important;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c8 svg rect.rect-height {
@@ -116,14 +90,10 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 }
 
 .c8.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c8.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -138,13 +108,14 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 .c3.MuiButton-root {
   height: 32px;
   font-size: 12px;
-  -webkit-letter-spacing: 1px;
-  -moz-letter-spacing: 1px;
-  -ms-letter-spacing: 1px;
   letter-spacing: 1px;
   line-height: 1;
   border-radius: 2px;
   font-weight: 600;
+}
+
+.c3.MuiButton-root:hover {
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c3.MuiButton-outlined {
@@ -158,18 +129,26 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
   padding: 0;
 }
 
-.c7.MuiButton-root:disabled svg {
-  fill: #d8d8d8;
+.c7.MuiButton-root.Mui-disabled svg {
+  fill: #BDBDBD;
 }
 
 .c7.MuiButton-root:hover {
-  background-color: rgba(0,179,236,0.1);
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c7.MuiButton-text {
   padding: 0;
 }
 
+.c7.MuiButton-text.Mui-disabled {
+  color: #BDBDBD;
+}
+
+.c7.MuiButton-text.Mui-disabled svg {
+  fill: #BDBDBD;
+}
+
 .c1 .sync-icon-button {
   text-transform: uppercase;
   pointer-events: none;
@@ -177,106 +156,66 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
 
 .c1 .rotate-icon {
   color: #009CCC;
-  -webkit-animation: 1s linear infinite dxlcOg;
   animation: 1s linear infinite dxlcOg;
 }
 
 .c2 {
   width: 50%;
-  min-width: -webkit-fit-content;
-  min-width: -moz-fit-content;
   min-width: fit-content;
 }
 
 <div
-  className="c0 c1 c2"
->
-  <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-text c3 sync-icon-button MuiButton-textPrimary MuiButton-disableElevation"
-    disabled={false}
-    onBlur={[Function]}
-    onDragLeave={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    tabIndex={0}
-    type="button"
+    class="c0 c1 c2"
   >
-    <span
-      className="MuiButton-label"
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation c3 sync-icon-button css-9buukw-MuiButtonBase-root-MuiButton-root"
+      id=":rg:"
+      tabindex="0"
+      type="button"
     >
       <span
-        className="MuiButton-startIcon MuiButton-iconSizeMedium"
+        class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1v1j2p3-MuiButton-startIcon"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="SyncIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
+              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8m0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4z"
             />
           </svg>
         </div>
       </span>
       Sync
-    </span>
-    <span
-      className="MuiTouchRipple-root"
+    </button>
+    <div
+      class="c6"
     />
-  </button>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Sync"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c7 MuiButton-outlinedPrimary MuiButton-disableElevation"
-      data-testid="sync-button"
-      disabled={false}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
+    <div
+      aria-label="Sync"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c7 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="sync-button"
+        id=":ri:"
+        tabindex="0"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PlayArrowIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -285,110 +224,62 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
             />
           </svg>
         </div>
-      </span>
-      <span
-        className="MuiTouchRipple-root"
-      />
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Suspend"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c7 MuiButton-outlinedPrimary MuiButton-disableElevation"
-      data-testid="suspend-button"
-      disabled={false}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Suspend"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c7 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="suspend-button"
+        id=":rk:"
+        tabindex="0"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PauseIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+              d="M6 19h4V5H6zm8-14v14h4V5z"
             />
           </svg>
         </div>
-      </span>
-      <span
-        className="MuiTouchRipple-root"
-      />
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Resume"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c7 MuiButton-outlinedPrimary MuiButton-disableElevation Mui-disabled Mui-disabled"
-      data-testid="resume-button"
-      disabled={true}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={-1}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Resume"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c7 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="resume-button"
+        disabled=""
+        id=":rm:"
+        tabindex="-1"
+        type="button"
       >
         <div
-          className="c4 c8"
+          class="c4 c8"
         >
           <svg
             height="24"
-            viewBox="0 0 24 24"
+            viewBox="-2 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -397,43 +288,25 @@ exports[`SyncActions snapshots hideSyncOptions 1`] = `
             />
           </svg>
         </div>
-      </span>
-    </button>
+      </button>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;
 
 exports[`SyncActions snapshots non-suspended 1`] = `
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c0 {
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   width: 100%;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
   justify-content: flex-start;
 }
 
 .c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
 }
 
@@ -449,8 +322,7 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 .c5 svg circle.path-fill,
 .c5 svg polyline.path-fill {
   fill: !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg path.stroke-fill,
@@ -460,8 +332,7 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 .c5 svg circle.stroke-fill,
 .c5 svg polyline.stroke-fill {
   stroke: !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg rect.rect-height {
@@ -470,14 +341,10 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 }
 
 .c5.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c5.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -497,9 +364,8 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 .c9 svg rect.path-fill,
 .c9 svg circle.path-fill,
 .c9 svg polyline.path-fill {
-  fill: #009CCC !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  fill: #009CCC!important;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c9 svg path.stroke-fill,
@@ -508,9 +374,8 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 .c9 svg rect.stroke-fill,
 .c9 svg circle.stroke-fill,
 .c9 svg polyline.stroke-fill {
-  stroke: #009CCC !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  stroke: #009CCC!important;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c9 svg rect.rect-height {
@@ -519,14 +384,10 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 }
 
 .c9.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c9.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -541,13 +402,14 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 .c3.MuiButton-root {
   height: 32px;
   font-size: 12px;
-  -webkit-letter-spacing: 1px;
-  -moz-letter-spacing: 1px;
-  -ms-letter-spacing: 1px;
   letter-spacing: 1px;
   line-height: 1;
   border-radius: 2px;
   font-weight: 600;
+}
+
+.c3.MuiButton-root:hover {
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c3.MuiButton-outlined {
@@ -564,7 +426,7 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 }
 
 .c7 .MuiFormControlLabel-label.Mui-disabled {
-  color: #d8d8d8;
+  color: #BDBDBD;
 }
 
 .c7 .MuiTypography-root {
@@ -578,16 +440,24 @@ exports[`SyncActions snapshots non-suspended 1`] = `
   padding: 0;
 }
 
-.c8.MuiButton-root:disabled svg {
-  fill: #d8d8d8;
+.c8.MuiButton-root.Mui-disabled svg {
+  fill: #BDBDBD;
 }
 
 .c8.MuiButton-root:hover {
-  background-color: rgba(0,179,236,0.1);
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c8.MuiButton-text {
   padding: 0;
+}
+
+.c8.MuiButton-text.Mui-disabled {
+  color: #BDBDBD;
+}
+
+.c8.MuiButton-text.Mui-disabled svg {
+  fill: #BDBDBD;
 }
 
 .c1 .sync-icon-button {
@@ -597,113 +467,76 @@ exports[`SyncActions snapshots non-suspended 1`] = `
 
 .c1 .rotate-icon {
   color: #009CCC;
-  -webkit-animation: 1s linear infinite dxlcOg;
   animation: 1s linear infinite dxlcOg;
 }
 
 .c2 {
   width: 50%;
-  min-width: -webkit-fit-content;
-  min-width: -moz-fit-content;
   min-width: fit-content;
 }
 
 <div
-  className="c0 c1 c2"
->
-  <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-text c3 sync-icon-button MuiButton-textPrimary MuiButton-disableElevation"
-    disabled={false}
-    onBlur={[Function]}
-    onDragLeave={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    tabIndex={0}
-    type="button"
+    class="c0 c1 c2"
   >
-    <span
-      className="MuiButton-label"
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation c3 sync-icon-button css-9buukw-MuiButtonBase-root-MuiButton-root"
+      id=":r0:"
+      tabindex="0"
+      type="button"
     >
       <span
-        className="MuiButton-startIcon MuiButton-iconSizeMedium"
+        class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1v1j2p3-MuiButton-startIcon"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="SyncIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
+              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8m0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4z"
             />
           </svg>
         </div>
       </span>
       Sync
-    </span>
-    <span
-      className="MuiTouchRipple-root"
-    />
-  </button>
-  <div
-    className="c6"
-  />
-  <div
-    className="MuiFormControl-root"
-  >
+    </button>
     <div
-      aria-labelledby="source-radio-buttons-group-label"
-      className="MuiFormGroup-root MuiFormGroup-row"
-      data-testid="sync-options"
-      role="radiogroup"
+      class="c6"
+    />
+    <div
+      class="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
     >
-      <label
-        className="MuiFormControlLabel-root c7"
+      <div
+        aria-labelledby="source-radio-buttons-group-label"
+        class="MuiFormGroup-root MuiFormGroup-row MuiRadioGroup-root MuiRadioGroup-row css-cis11t-MuiFormGroup-root"
+        data-testid="sync-options"
+        role="radiogroup"
       >
-        <span
-          aria-disabled={false}
-          className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-1 MuiRadio-root MuiRadio-colorSecondary PrivateSwitchBase-checked-2 Mui-checked MuiIconButton-colorSecondary"
-          onBlur={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={null}
+        <label
+          class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd c7 css-12f4qvw-MuiFormControlLabel-root"
         >
           <span
-            className="MuiIconButton-label"
+            class="MuiButtonBase-root MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-root MuiRadio-root MuiRadio-colorPrimary Mui-checked MuiRadio-root MuiRadio-colorPrimary css-1avr0ra-MuiButtonBase-root-MuiRadio-root"
           >
             <input
-              checked={true}
-              className="PrivateSwitchBase-input-4"
-              disabled={false}
+              checked=""
+              class="PrivateSwitchBase-input css-j8yymo"
               name="source-radio-buttons-group"
-              onChange={[Function]}
               type="radio"
               value="WithSource"
             />
-            <div
-              className="PrivateRadioButtonIcon-root-5 PrivateRadioButtonIcon-checked-7"
+            <span
+              class="css-1qiat4j"
             >
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1bz1rr0-MuiSvgIcon-root"
+                data-testid="RadioButtonUncheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -712,8 +545,9 @@ exports[`SyncActions snapshots non-suspended 1`] = `
                 />
               </svg>
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-6"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-z8nmqa-MuiSvgIcon-root"
+                data-testid="RadioButtonCheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -721,58 +555,36 @@ exports[`SyncActions snapshots non-suspended 1`] = `
                   d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
                 />
               </svg>
-            </div>
+            </span>
           </span>
           <span
-            className="MuiTouchRipple-root"
-          />
-        </span>
-        <span
-          className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
-        >
-          with Source
-        </span>
-      </label>
-      <div
-        className="c6"
-      />
-      <label
-        className="MuiFormControlLabel-root c7"
-      >
-        <span
-          aria-disabled={false}
-          className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-1 MuiRadio-root MuiRadio-colorSecondary MuiIconButton-colorSecondary"
-          onBlur={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={null}
+            class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-1lw54ax-MuiTypography-root"
+          >
+            with Source
+          </span>
+        </label>
+        <div
+          class="c6"
+        />
+        <label
+          class="MuiFormControlLabel-root MuiFormControlLabel-labelPlacementEnd c7 css-12f4qvw-MuiFormControlLabel-root"
         >
           <span
-            className="MuiIconButton-label"
+            class="MuiButtonBase-root MuiRadio-root MuiRadio-colorPrimary PrivateSwitchBase-root MuiRadio-root MuiRadio-colorPrimary MuiRadio-root MuiRadio-colorPrimary css-1avr0ra-MuiButtonBase-root-MuiRadio-root"
           >
             <input
-              checked={false}
-              className="PrivateSwitchBase-input-4"
-              disabled={false}
+              class="PrivateSwitchBase-input css-j8yymo"
               name="source-radio-buttons-group"
-              onChange={[Function]}
               type="radio"
               value="WithoutSource"
             />
-            <div
-              className="PrivateRadioButtonIcon-root-5"
+            <span
+              class="css-1qiat4j"
             >
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1bz1rr0-MuiSvgIcon-root"
+                data-testid="RadioButtonUncheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -781,8 +593,9 @@ exports[`SyncActions snapshots non-suspended 1`] = `
                 />
               </svg>
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-6"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-o8rdeq-MuiSvgIcon-root"
+                data-testid="RadioButtonCheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -790,62 +603,38 @@ exports[`SyncActions snapshots non-suspended 1`] = `
                   d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
                 />
               </svg>
-            </div>
+            </span>
           </span>
           <span
-            className="MuiTouchRipple-root"
-          />
-        </span>
-        <span
-          className="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1"
-        >
-          without Source
-        </span>
-      </label>
+            class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label css-1lw54ax-MuiTypography-root"
+          >
+            without Source
+          </span>
+        </label>
+      </div>
     </div>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Sync"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation"
-      data-testid="sync-button"
-      disabled={false}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Sync"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="sync-button"
+        id=":r3:"
+        tabindex="0"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PlayArrowIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -854,110 +643,62 @@ exports[`SyncActions snapshots non-suspended 1`] = `
             />
           </svg>
         </div>
-      </span>
-      <span
-        className="MuiTouchRipple-root"
-      />
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Suspend"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation"
-      data-testid="suspend-button"
-      disabled={false}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Suspend"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="suspend-button"
+        id=":r5:"
+        tabindex="0"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PauseIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+              d="M6 19h4V5H6zm8-14v14h4V5z"
             />
           </svg>
         </div>
-      </span>
-      <span
-        className="MuiTouchRipple-root"
-      />
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Resume"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation Mui-disabled Mui-disabled"
-      data-testid="resume-button"
-      disabled={true}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={-1}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Resume"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="resume-button"
+        disabled=""
+        id=":r7:"
+        tabindex="-1"
+        type="button"
       >
         <div
-          className="c4 c9"
+          class="c4 c9"
         >
           <svg
             height="24"
-            viewBox="0 0 24 24"
+            viewBox="-2 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -966,43 +707,25 @@ exports[`SyncActions snapshots non-suspended 1`] = `
             />
           </svg>
         </div>
-      </span>
-    </button>
+      </button>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;
 
 exports[`SyncActions snapshots suspended 1`] = `
-.c0 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+<DocumentFragment>
+  .c0 {
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   width: 100%;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
   justify-content: flex-start;
 }
 
 .c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
 }
 
@@ -1018,8 +741,7 @@ exports[`SyncActions snapshots suspended 1`] = `
 .c5 svg circle.path-fill,
 .c5 svg polyline.path-fill {
   fill: !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg path.stroke-fill,
@@ -1029,8 +751,7 @@ exports[`SyncActions snapshots suspended 1`] = `
 .c5 svg circle.stroke-fill,
 .c5 svg polyline.stroke-fill {
   stroke: !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c5 svg rect.rect-height {
@@ -1039,14 +760,10 @@ exports[`SyncActions snapshots suspended 1`] = `
 }
 
 .c5.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c5.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -1066,9 +783,8 @@ exports[`SyncActions snapshots suspended 1`] = `
 .c9 svg rect.path-fill,
 .c9 svg circle.path-fill,
 .c9 svg polyline.path-fill {
-  fill: #009CCC !important;
-  -webkit-transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: fill 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  fill: #009CCC!important;
+  transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c9 svg path.stroke-fill,
@@ -1077,9 +793,8 @@ exports[`SyncActions snapshots suspended 1`] = `
 .c9 svg rect.stroke-fill,
 .c9 svg circle.stroke-fill,
 .c9 svg polyline.stroke-fill {
-  stroke: #009CCC !important;
-  -webkit-transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
-  transition: stroke 200ms cubic-bezier(0.4,0,0.2,1) 0ms;
+  stroke: #009CCC!important;
+  transition: stroke 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .c9 svg rect.rect-height {
@@ -1088,14 +803,10 @@ exports[`SyncActions snapshots suspended 1`] = `
 }
 
 .c9.downward {
-  -webkit-transform: rotate(180deg);
-  -ms-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .c9.upward {
-  -webkit-transform: initial;
-  -ms-transform: initial;
   transform: initial;
 }
 
@@ -1110,13 +821,14 @@ exports[`SyncActions snapshots suspended 1`] = `
 .c3.MuiButton-root {
   height: 32px;
   font-size: 12px;
-  -webkit-letter-spacing: 1px;
-  -moz-letter-spacing: 1px;
-  -ms-letter-spacing: 1px;
   letter-spacing: 1px;
   line-height: 1;
   border-radius: 2px;
   font-weight: 600;
+}
+
+.c3.MuiButton-root:hover {
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c3.MuiButton-outlined {
@@ -1133,7 +845,7 @@ exports[`SyncActions snapshots suspended 1`] = `
 }
 
 .c7 .MuiFormControlLabel-label.Mui-disabled {
-  color: #d8d8d8;
+  color: #BDBDBD;
 }
 
 .c7 .MuiTypography-root {
@@ -1147,16 +859,24 @@ exports[`SyncActions snapshots suspended 1`] = `
   padding: 0;
 }
 
-.c8.MuiButton-root:disabled svg {
-  fill: #d8d8d8;
+.c8.MuiButton-root.Mui-disabled svg {
+  fill: #BDBDBD;
 }
 
 .c8.MuiButton-root:hover {
-  background-color: rgba(0,179,236,0.1);
+  background-color: rgba(0, 179, 236, 0.1);
 }
 
 .c8.MuiButton-text {
   padding: 0;
+}
+
+.c8.MuiButton-text.Mui-disabled {
+  color: #BDBDBD;
+}
+
+.c8.MuiButton-text.Mui-disabled svg {
+  fill: #BDBDBD;
 }
 
 .c1 .sync-icon-button {
@@ -1166,110 +886,80 @@ exports[`SyncActions snapshots suspended 1`] = `
 
 .c1 .rotate-icon {
   color: #009CCC;
-  -webkit-animation: 1s linear infinite dxlcOg;
   animation: 1s linear infinite dxlcOg;
 }
 
 .c2 {
   width: 50%;
-  min-width: -webkit-fit-content;
-  min-width: -moz-fit-content;
   min-width: fit-content;
 }
 
 <div
-  className="c0 c1 c2"
->
-  <button
-    className="MuiButtonBase-root MuiButton-root MuiButton-text c3 sync-icon-button MuiButton-textPrimary MuiButton-disableElevation Mui-disabled Mui-disabled"
-    disabled={true}
-    onBlur={[Function]}
-    onDragLeave={[Function]}
-    onFocus={[Function]}
-    onKeyDown={[Function]}
-    onKeyUp={[Function]}
-    onMouseDown={[Function]}
-    onMouseLeave={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchMove={[Function]}
-    onTouchStart={[Function]}
-    tabIndex={-1}
-    type="button"
+    class="c0 c1 c2"
   >
-    <span
-      className="MuiButton-label"
+    <button
+      class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary MuiButton-disableElevation c3 sync-icon-button css-9buukw-MuiButtonBase-root-MuiButton-root"
+      disabled=""
+      id=":r8:"
+      tabindex="-1"
+      type="button"
     >
       <span
-        className="MuiButton-startIcon MuiButton-iconSizeMedium"
+        class="MuiButton-icon MuiButton-startIcon MuiButton-iconSizeMedium css-1v1j2p3-MuiButton-startIcon"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="SyncIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
+              d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8m0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4z"
             />
           </svg>
         </div>
       </span>
       Sync
-    </span>
-  </button>
-  <div
-    className="c6"
-  />
-  <div
-    className="MuiFormControl-root"
-  >
+    </button>
     <div
-      aria-labelledby="source-radio-buttons-group-label"
-      className="MuiFormGroup-root MuiFormGroup-row"
-      data-testid="sync-options"
-      role="radiogroup"
+      class="c6"
+    />
+    <div
+      class="MuiFormControl-root css-1iw3t7y-MuiFormControl-root"
     >
-      <label
-        className="MuiFormControlLabel-root c7 Mui-disabled"
+      <div
+        aria-labelledby="source-radio-buttons-group-label"
+        class="MuiFormGroup-root MuiFormGroup-row MuiRadioGroup-root MuiRadioGroup-row css-cis11t-MuiFormGroup-root"
+        data-testid="sync-options"
+        role="radiogroup"
       >
-        <span
-          aria-disabled={true}
-          className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-8 MuiRadio-root MuiRadio-colorSecondary PrivateSwitchBase-checked-9 Mui-checked PrivateSwitchBase-disabled-10 Mui-disabled MuiIconButton-colorSecondary Mui-disabled Mui-disabled"
-          onBlur={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={-1}
+        <label
+          class="MuiFormControlLabel-root Mui-disabled MuiFormControlLabel-labelPlacementEnd c7 css-12f4qvw-MuiFormControlLabel-root"
         >
           <span
-            className="MuiIconButton-label"
+            aria-disabled="true"
+            class="MuiButtonBase-root MuiRadio-root MuiRadio-colorPrimary Mui-disabled PrivateSwitchBase-root MuiRadio-root MuiRadio-colorPrimary Mui-checked Mui-disabled MuiRadio-root MuiRadio-colorPrimary css-1a0qp0h-MuiButtonBase-root-MuiRadio-root"
+            tabindex="-1"
           >
             <input
-              checked={true}
-              className="PrivateSwitchBase-input-11"
-              disabled={true}
+              checked=""
+              class="PrivateSwitchBase-input css-j8yymo"
+              disabled=""
               name="source-radio-buttons-group"
-              onChange={[Function]}
               type="radio"
               value="WithSource"
             />
-            <div
-              className="PrivateRadioButtonIcon-root-12 PrivateRadioButtonIcon-checked-14"
+            <span
+              class="css-1qiat4j"
             >
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1bz1rr0-MuiSvgIcon-root"
+                data-testid="RadioButtonUncheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -1278,8 +968,9 @@ exports[`SyncActions snapshots suspended 1`] = `
                 />
               </svg>
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-13"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-z8nmqa-MuiSvgIcon-root"
+                data-testid="RadioButtonCheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -1287,55 +978,39 @@ exports[`SyncActions snapshots suspended 1`] = `
                   d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
                 />
               </svg>
-            </div>
+            </span>
           </span>
-        </span>
-        <span
-          className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
-        >
-          with Source
-        </span>
-      </label>
-      <div
-        className="c6"
-      />
-      <label
-        className="MuiFormControlLabel-root c7 Mui-disabled"
-      >
-        <span
-          aria-disabled={true}
-          className="MuiButtonBase-root MuiIconButton-root PrivateSwitchBase-root-8 MuiRadio-root MuiRadio-colorSecondary PrivateSwitchBase-disabled-10 Mui-disabled MuiIconButton-colorSecondary Mui-disabled Mui-disabled"
-          onBlur={[Function]}
-          onDragLeave={[Function]}
-          onFocus={[Function]}
-          onKeyDown={[Function]}
-          onKeyUp={[Function]}
-          onMouseDown={[Function]}
-          onMouseLeave={[Function]}
-          onMouseUp={[Function]}
-          onTouchEnd={[Function]}
-          onTouchMove={[Function]}
-          onTouchStart={[Function]}
-          tabIndex={-1}
+          <span
+            class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label Mui-disabled css-1lw54ax-MuiTypography-root"
+          >
+            with Source
+          </span>
+        </label>
+        <div
+          class="c6"
+        />
+        <label
+          class="MuiFormControlLabel-root Mui-disabled MuiFormControlLabel-labelPlacementEnd c7 css-12f4qvw-MuiFormControlLabel-root"
         >
           <span
-            className="MuiIconButton-label"
+            aria-disabled="true"
+            class="MuiButtonBase-root MuiRadio-root MuiRadio-colorPrimary Mui-disabled PrivateSwitchBase-root MuiRadio-root MuiRadio-colorPrimary Mui-disabled MuiRadio-root MuiRadio-colorPrimary css-1a0qp0h-MuiButtonBase-root-MuiRadio-root"
+            tabindex="-1"
           >
             <input
-              checked={false}
-              className="PrivateSwitchBase-input-11"
-              disabled={true}
+              class="PrivateSwitchBase-input css-j8yymo"
+              disabled=""
               name="source-radio-buttons-group"
-              onChange={[Function]}
               type="radio"
               value="WithoutSource"
             />
-            <div
-              className="PrivateRadioButtonIcon-root-12"
+            <span
+              class="css-1qiat4j"
             >
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1bz1rr0-MuiSvgIcon-root"
+                data-testid="RadioButtonUncheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -1344,8 +1019,9 @@ exports[`SyncActions snapshots suspended 1`] = `
                 />
               </svg>
               <svg
-                aria-hidden={true}
-                className="MuiSvgIcon-root PrivateRadioButtonIcon-layer-13"
+                aria-hidden="true"
+                class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-o8rdeq-MuiSvgIcon-root"
+                data-testid="RadioButtonCheckedIcon"
                 focusable="false"
                 viewBox="0 0 24 24"
               >
@@ -1353,59 +1029,39 @@ exports[`SyncActions snapshots suspended 1`] = `
                   d="M8.465 8.465C9.37 7.56 10.62 7 12 7C14.76 7 17 9.24 17 12C17 13.38 16.44 14.63 15.535 15.535C14.63 16.44 13.38 17 12 17C9.24 17 7 14.76 7 12C7 10.62 7.56 9.37 8.465 8.465Z"
                 />
               </svg>
-            </div>
+            </span>
           </span>
-        </span>
-        <span
-          className="MuiTypography-root MuiFormControlLabel-label Mui-disabled MuiTypography-body1"
-        >
-          without Source
-        </span>
-      </label>
+          <span
+            class="MuiTypography-root MuiTypography-body1 MuiFormControlLabel-label Mui-disabled css-1lw54ax-MuiTypography-root"
+          >
+            without Source
+          </span>
+        </label>
+      </div>
     </div>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Sync"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation Mui-disabled Mui-disabled"
-      data-testid="sync-button"
-      disabled={true}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={-1}
-      type="button"
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Sync"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="sync-button"
+        disabled=""
+        id=":rb:"
+        tabindex="-1"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PlayArrowIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
@@ -1414,104 +1070,62 @@ exports[`SyncActions snapshots suspended 1`] = `
             />
           </svg>
         </div>
-      </span>
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Suspend"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation Mui-disabled Mui-disabled"
-      data-testid="suspend-button"
-      disabled={true}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={-1}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Suspend"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation Mui-disabled MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="suspend-button"
+        disabled=""
+        id=":rd:"
+        tabindex="-1"
+        type="button"
       >
         <div
-          className="c4 c5"
+          class="c4 c5"
         >
           <svg
-            aria-hidden={true}
-            className="MuiSvgIcon-root"
+            aria-hidden="true"
+            class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-1umw9bq-MuiSvgIcon-root"
+            data-testid="PauseIcon"
             focusable="false"
             viewBox="0 0 24 24"
           >
             <path
-              d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+              d="M6 19h4V5H6zm8-14v14h4V5z"
             />
           </svg>
         </div>
-      </span>
-    </button>
-  </div>
-  <div
-    className="c6"
-  />
-  <div
-    aria-describedby={null}
-    className=""
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseLeave={[Function]}
-    onMouseOver={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-    title="Resume"
-  >
-    <button
-      className="MuiButtonBase-root MuiButton-root MuiButton-outlined c3 c8 MuiButton-outlinedPrimary MuiButton-disableElevation"
-      data-testid="resume-button"
-      disabled={false}
-      onBlur={[Function]}
-      onClick={[Function]}
-      onDragLeave={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      onKeyUp={[Function]}
-      onMouseDown={[Function]}
-      onMouseLeave={[Function]}
-      onMouseUp={[Function]}
-      onTouchEnd={[Function]}
-      onTouchMove={[Function]}
-      onTouchStart={[Function]}
-      tabIndex={0}
-      type="button"
+      </button>
+    </div>
+    <div
+      class="c6"
+    />
+    <div
+      aria-label="Resume"
+      class=""
+      data-mui-internal-clone-element="true"
     >
-      <span
-        className="MuiButton-label"
+      <button
+        class="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary MuiButton-sizeLarge MuiButton-outlinedSizeLarge MuiButton-colorPrimary MuiButton-disableElevation c3 c8 css-624mb0-MuiButtonBase-root-MuiButton-root"
+        data-testid="resume-button"
+        id=":rf:"
+        tabindex="0"
+        type="button"
       >
         <div
-          className="c4 c9"
+          class="c4 c9"
         >
           <svg
             height="24"
-            viewBox="0 0 24 24"
+            viewBox="-2 0 24 24"
             width="24"
             xmlns="http://www.w3.org/2000/svg"
           >
@@ -1520,11 +1134,8 @@ exports[`SyncActions snapshots suspended 1`] = `
             />
           </svg>
         </div>
-      </span>
-      <span
-        className="MuiTouchRipple-root"
-      />
-    </button>
+      </button>
+    </div>
   </div>
-</div>
+</DocumentFragment>
 `;

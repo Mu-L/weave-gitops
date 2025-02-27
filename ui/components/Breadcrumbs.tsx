@@ -1,4 +1,4 @@
-import { Tooltip } from "@material-ui/core";
+import { Tooltip } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import Flex from "./Flex";
@@ -17,6 +17,7 @@ export interface Breadcrumb {
   url?: string;
 }
 interface Props {
+  className?: string;
   path: Breadcrumb[];
 }
 export const Breadcrumbs = ({ path = [] }: Props) => {

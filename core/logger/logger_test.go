@@ -8,9 +8,10 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	l "github.com/weaveworks/weave-gitops/core/logger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	l "github.com/weaveworks/weave-gitops/core/logger"
 )
 
 func TestNewFromConfigCreatesDevLogger(t *testing.T) {
@@ -162,8 +163,8 @@ var (
 )
 
 func redirectStdout(t *testing.T) (*os.File, *os.File) {
-	g := NewGomegaWithT(t)
 	t.Helper()
+	g := NewGomegaWithT(t)
 
 	oldStdout := os.Stdout
 	r, w, err := os.Pipe()
@@ -179,8 +180,8 @@ func redirectStdout(t *testing.T) (*os.File, *os.File) {
 }
 
 func getLogs(t *testing.T, r, w *os.File) []byte {
-	g := NewGomegaWithT(t)
 	t.Helper()
+	g := NewGomegaWithT(t)
 
 	w.Close()
 

@@ -1,7 +1,7 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/dom";
+import { fireEvent, render } from "@testing-library/react";
 import "jest-styled-components";
 import React from "react";
-import renderer from "react-test-renderer";
 import { withContext, withTheme } from "../../../lib/test-utils";
 import DataTable from "../DataTable";
 
@@ -63,9 +63,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable fields={fields} rows={rows} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
       const firstRow = screen.getAllByRole("row")[1];
       expect(firstRow.innerHTML).toMatch(/nginx/);
@@ -76,9 +76,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable fields={fields} rows={rows} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
 
       const nameButton = screen.getByText("Name");
@@ -92,9 +92,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable fields={fields} rows={rows} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
       const nameButton = screen.getByText("Name");
       fireEvent.click(nameButton);
@@ -109,9 +109,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable fields={fields} rows={[]} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
       const firstRow = screen.getAllByRole("row")[1];
       expect(firstRow.innerHTML).toMatch(/No/);
@@ -141,9 +141,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable fields={fields} rows={rows} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
 
       let firstRow = screen.getAllByRole("row")[1];
@@ -180,9 +180,9 @@ describe("DataTable", () => {
           withContext(
             <DataTable disableSort fields={fields} rows={rows} />,
             "/applications",
-            {}
-          )
-        )
+            {},
+          ),
+        ),
       );
 
       const nameButton = screen.getByText("Name");
@@ -195,17 +195,15 @@ describe("DataTable", () => {
 
   describe("snapshots", () => {
     it("renders", () => {
-      const tree = renderer
-        .create(
-          withTheme(
-            withContext(
-              <DataTable fields={fields} rows={rows} />,
-              "/applications",
-              {}
-            )
-          )
-        )
-        .toJSON();
+      const tree = render(
+        withTheme(
+          withContext(
+            <DataTable fields={fields} rows={rows} />,
+            "/applications",
+            {},
+          ),
+        ),
+      ).asFragment();
       expect(tree).toMatchSnapshot();
     });
   });

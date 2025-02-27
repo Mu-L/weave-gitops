@@ -1,6 +1,5 @@
 // Typescript will handle type-checking/linting for this file
-import { createTheme } from "@material-ui/core";
-import { alpha } from "@material-ui/core/styles/colorManipulator";
+import { createTheme, alpha } from "@mui/material/styles";
 // eslint-disable-next-line
 import { createGlobalStyle, DefaultTheme } from "styled-components";
 import { ThemeTypes } from "../contexts/AppContext";
@@ -119,11 +118,11 @@ export const theme = (mode: ThemeTypes = ThemeTypes.Light): DefaultTheme => {
         alertMedium: "#D58572",
         alertOriginal: "#BC3B1D",
         alertDark: "#9F3119",
-        neutralGray: "#F6F7F9",
+        neutralGray: "#C2C9D7",
         pipelineGray: "#dde1e9",
-        neutral00: "#ffffff",
+        neutral00: "#EEEEEE",
         neutral10: "#f5f5f5",
-        neutral20: "#d8d8d8",
+        neutral20: "#BDBDBD",
         neutral30: "#737373",
         neutral40: "#1a1a1a",
         whiteToPrimary: "#fff",
@@ -160,7 +159,7 @@ export const GlobalStyle = createGlobalStyle`
     height: 100%;
     margin: 0;
   }
-  
+
   body {
     font-family: ${(props) => props.theme.fontFamilies.regular};
     font-size: ${(props) => props.theme.fontSizes.medium};
@@ -168,11 +167,11 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
     min-width: fit-content;
-    background: right bottom no-repeat fixed; 
+    background: right bottom no-repeat fixed;
     background-image: ${(props) =>
       props.theme.mode === ThemeTypes.Dark
         ? `url(${images.bgDark})`
-        : `url(${images.bg}), linear-gradient(to bottom, rgba(85, 105, 145, .1) 5%, rgba(85, 105, 145, .1), rgba(85, 105, 145, .25) 35%)`};
+        : `url(${images.bg}), linear-gradient(to bottom, rgba(85, 105, 145, .35) 5%, rgba(85, 105, 145, .30), rgba(85, 105, 145, .25) 35%)`};
     background-color: ${(props) =>
       props.theme.mode === ThemeTypes.Dark
         ? props.theme.colors.neutralGray
@@ -185,7 +184,7 @@ export const GlobalStyle = createGlobalStyle`
 
 //prevents white autofill background in dark mode
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
     ${(props) =>
       props.theme.mode === ThemeTypes.Dark &&
@@ -196,7 +195,9 @@ input:-webkit-autofill:focus {
 export const muiTheme = (colors, mode) =>
   createTheme({
     typography: { fontFamily: "proxima-nova" },
+    mixins: {},
     palette: {
+      mode: "light",
       primary: {
         //Main - Primary Color Dark - 10
         main: colors.primary10,
@@ -213,92 +214,101 @@ export const muiTheme = (colors, mode) =>
         disabled: colors.neutral30,
       },
     },
-    overrides: {
+    components: {
       MuiSlider: {
-        root: {
-          color: colors.primary,
+        styleOverrides: {
+          root: {
+            color: colors.primary,
+          },
         },
       },
       MuiTooltip: {
-        tooltip: {
-          fontSize: "1rem",
+        styleOverrides: {
+          tooltip: {
+            fontSize: "1rem",
+          },
         },
       },
       MuiPaper: {
-        root: {
-          overflowX: "hidden",
-          backgroundColor: colors.white,
+        styleOverrides: {
+          root: {
+            overflowX: "hidden",
+            backgroundColor: colors.white,
+          },
         },
       },
       MuiDrawer: {
-        paper: {
-          width: "60%",
-          minWidth: 600,
+        styleOverrides: {
+          paper: {
+            width: "60%",
+            minWidth: 600,
+            backgroundColor: colors.neutral00,
+          },
         },
       },
       //for dark mode disabled buttons
       MuiButton: {
-        root: {
-          "&$disabled": {
-            color:
-              mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled": {
+              color:
+                mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+            },
           },
-        },
-        outlined: {
-          "&$disabled": {
-            borderColor:
-              mode === ThemeTypes.Dark
-                ? `${colors.primary30}`
-                : `${colors.neutral20}`,
-          },
-          "&$outlinedPrimary": {
-            borderColor:
-              mode === ThemeTypes.Dark
-                ? `${colors.primary30}`
-                : `${colors.neutral20}`,
+          outlined: {
+            "&.Mui-disabled": {
+              borderColor:
+                mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+            },
+            "&.Mui-outlinedPrimary": {
+              borderColor:
+                mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+            },
           },
         },
       },
       //disabled checkboxes in dark mode
       MuiCheckbox: {
-        colorSecondary: {
-          "&$disabled": {
-            color: mode === ThemeTypes.Dark && colors.neutral40,
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled": {
+              color: mode === ThemeTypes.Dark && colors.neutral40,
+            },
           },
         },
       },
       MuiInput: {
-        underline: {
-          "&::before": {
-            borderBottom:
-              mode === ThemeTypes.Dark && `1px solid ${colors.neutral40}`,
+        styleOverrides: {
+          underline: {
+            "&::before": {
+              borderBottom:
+                mode === ThemeTypes.Dark && `1px solid ${colors.neutral40}`,
+            },
           },
         },
       },
       // radio buttons
       MuiRadio: {
-        root: {
-          padding: 0,
-          color: colors.primary30,
-        },
+        styleOverrides: {
+          root: {
+            padding: 0,
+            color: colors.primary30,
 
-        colorSecondary: {
-          color: colors.primary30,
+            "&:hover": {
+              backgroundColor: ThemeTypes.Dark
+                ? alpha(colors.primary10, 0.2)
+                : alpha(colors.primary, 0.1),
+              color: colors.primary10,
+            },
 
-          "&:hover": {
-            backgroundColor: ThemeTypes.Dark
-              ? alpha(colors.primary10, 0.2)
-              : alpha(colors.primary, 0.1),
-            color: colors.primary10,
-          },
+            "&.Mui-checked": {
+              color: colors.primary10,
+            },
 
-          "&$checked": {
-            color: colors.primary10,
-          },
-
-          "&$disabled": {
-            color:
-              mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+            "&.Mui-disabled": {
+              color:
+                mode === ThemeTypes.Dark ? colors.primary30 : colors.neutral20,
+            },
           },
         },
       },

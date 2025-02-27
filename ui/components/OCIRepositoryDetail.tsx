@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import { useFeatureFlags } from "../hooks/featureflags";
 import { Kind } from "../lib/api/core/types.pb";
@@ -31,7 +32,10 @@ function OCIRepositoryDetail({
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={ociRepository.clusterName} />,
+          <ClusterDashboardLink
+            key={ociRepository.uid}
+            clusterName={ociRepository.clusterName}
+          />,
         ],
       ]
     : [];
@@ -44,7 +48,12 @@ function OCIRepositoryDetail({
       customActions={customActions}
       info={[
         ["Kind", Kind.OCIRepository],
-        ["URL", <Link href={ociRepository.url}>{ociRepository.url}</Link>],
+        [
+          "URL",
+          <Link key={ociRepository.uid} href={ociRepository.url}>
+            {ociRepository.url}
+          </Link>,
+        ],
         [
           "Last Updated",
           ociRepository.lastUpdatedAt ? (
@@ -53,7 +62,13 @@ function OCIRepositoryDetail({
             "-"
           ),
         ],
-        ["Interval", <Interval interval={ociRepository.interval} />],
+        [
+          "Interval",
+          <Interval
+            key={ociRepository.uid}
+            interval={ociRepository.interval}
+          />,
+        ],
         ...clusterInfo,
         ["Namespace", ociRepository.namespace],
         ...tenancyInfo,

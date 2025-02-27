@@ -78,11 +78,12 @@ To customize a deployment from a repository you don’t control, you can use Flu
 
 1. Add the `patches` section as shown below to the field spec of your `podinfo-kustomization.yaml` file so it looks like this:
 
-	<details><summary>Expand to see Kustomization patches</summary>
+  <details>
+  <summary>Expand to see Kustomization patches</summary>
 
    ```yaml title="./clusters/management/podinfo-kustomization.yaml"
    ---
-   apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+   apiVersion: kustomize.toolkit.fluxcd.io/v1
    kind: Kustomization
    metadata:
      name: podinfo

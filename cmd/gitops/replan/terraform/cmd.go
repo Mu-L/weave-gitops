@@ -1,14 +1,16 @@
 package terraform
 
 import (
+	"context"
 	"os"
 
+	"github.com/flux-iac/tofu-controller/tfctl"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/weaveworks/tf-controller/tfctl"
+	"k8s.io/cli-runtime/pkg/genericclioptions"
+
 	"github.com/weaveworks/weave-gitops/cmd/gitops/config"
 	"github.com/weaveworks/weave-gitops/pkg/run"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 )
 
 var kubeConfigArgs *genericclioptions.ConfigFlags
@@ -31,13 +33,13 @@ gitops replan terraform --namespace flux-system my-resource
 				return err
 			}
 
-			context, err := cmd.Flags().GetString("context")
+			kubeCtx, err := cmd.Flags().GetString("context")
 			if err != nil {
 				return err
 			}
 
 			kubeConfigArgs.Namespace = &namespace
-			kubeConfigArgs.Context = &context
+			kubeConfigArgs.Context = &kubeCtx
 
 			v := viper.New()
 			v.Set("namespace", namespace)
@@ -46,6 +48,7 @@ gitops replan terraform --namespace flux-system my-resource
 			}
 
 			return app.Replan(
+				context.TODO(),
 				os.Stdout,
 				args[0],
 			)

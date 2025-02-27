@@ -4,10 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"k8s.io/client-go/rest"
+
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
 	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"github.com/weaveworks/weave-gitops/pkg/testutils"
-	"k8s.io/client-go/rest"
 )
 
 var k8sEnv *testutils.K8sTestEnv
@@ -15,10 +16,8 @@ var k8sEnv *testutils.K8sTestEnv
 func TestMain(m *testing.M) {
 	var err error
 	k8sEnv, err = testutils.StartK8sTestEnvironment([]string{
-		"../../manifests/crds",
 		"../../tools/testcrds",
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -31,6 +30,7 @@ func TestMain(m *testing.M) {
 }
 
 func makeLeafCluster(t *testing.T, name string) cluster.Cluster {
+	t.Helper()
 	cluster, err := cluster.NewSingleCluster(name, k8sEnv.Rest, nil, kube.UserPrefixes{})
 	if err != nil {
 		t.Error("Expected err to be nil, got", err)
@@ -40,6 +40,7 @@ func makeLeafCluster(t *testing.T, name string) cluster.Cluster {
 }
 
 func makeUnreachableLeafCluster(t *testing.T, name string) cluster.Cluster {
+	t.Helper()
 	c := rest.CopyConfig(k8sEnv.Rest)
 
 	// hopefully no k8s server is listening here

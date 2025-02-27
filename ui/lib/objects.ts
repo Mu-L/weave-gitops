@@ -1,5 +1,5 @@
+import { dump } from "js-yaml";
 import _ from "lodash";
-import { stringify } from "yaml";
 import {
   Condition,
   GitRepositoryRef,
@@ -11,6 +11,7 @@ import {
   ObjectRef,
   Object as ResponseObject,
 } from "./api/core/types.pb";
+
 export type Automation = HelmRelease | Kustomization;
 export type Source =
   | HelmRepository
@@ -37,9 +38,10 @@ export class FluxObject {
   info: string;
   children: FluxObject[];
   health: HealthStatus;
-  constructor(response: ResponseObject) {
+  isCurrentNode?: boolean;
+  constructor(response: ResponseObject | undefined) {
     try {
-      this.obj = JSON.parse(response.payload);
+      this.obj = JSON.parse(response?.payload);
     } catch {
       this.obj = {};
     }
@@ -52,7 +54,7 @@ export class FluxObject {
   }
 
   get yaml(): string {
-    return stringify(this.obj);
+    return dump(this.obj);
   }
 
   get name(): string {
@@ -109,7 +111,7 @@ export class FluxObject {
   get interval(): Interval {
     const match =
       /((?<hours>[0-9]+)h)?((?<minutes>[0-9]+)m)?((?<seconds>[0-9]+)s)?/.exec(
-        this.obj.spec?.interval
+        this.obj.spec?.interval,
       );
     const interval = match?.groups || {};
     return {
@@ -129,7 +131,7 @@ export class FluxObject {
       const containers = _.get(this.obj, path, []);
       // _.map returns an empty list if containers is not iterable
       return _.map(containers, (container: unknown) =>
-        _.get(container, "image")
+        _.get(container, "image"),
       );
     });
 
@@ -249,8 +251,8 @@ export class Kustomization extends FluxObject {
           const kind = parts[parts.length - 1];
           const group = parts[parts.length - 2];
           return { group, version: entry.v, kind };
-        })
-      )
+        }),
+      ),
     );
   }
 }
@@ -262,7 +264,7 @@ export class HelmRelease extends FluxObject {
     super(response);
     try {
       this.inventory = response.inventory || [];
-    } catch (error) {
+    } catch {
       this.inventory = [];
     }
   }

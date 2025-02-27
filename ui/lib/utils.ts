@@ -6,8 +6,9 @@ import styled from "styled-components";
 import Flex from "../components/Flex";
 import { computeReady, ReadyType } from "../components/KubeStatusIndicator";
 import { AppVersion, repoUrl } from "../components/Version";
+import { ThemeTypes } from "../contexts/AppContext";
 import { AuthRoutes } from "../contexts/AuthContext";
-import { GetVersionResponse } from "../lib/api/core/core.pb";
+import { GetVersionResponse } from "./api/core/core.pb";
 import { Condition, Kind, ObjectRef } from "./api/core/types.pb";
 import { Automation, HelmRelease, Kustomization } from "./objects";
 
@@ -72,7 +73,7 @@ export function isHTTP(uri: string): boolean {
       // resource path (optional)
       "(?:[/?#]\\S*)?" +
       "$",
-    "i"
+    "i",
   );
 
   return regex.test(uri);
@@ -85,7 +86,7 @@ export function isHTTP(uri: string): boolean {
 export function isAllowedLink(uri: string): boolean {
   // Regex from https://github.com/cure53/DOMPurify/blob/cce00ac40d33c2aae6422eaa59e6a8aad5c73901/src/regexp.js
   const regex = new RegExp(
-    /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i // eslint-disable-line no-useless-escape
+    /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i, // eslint-disable-line no-useless-escape
   );
   return regex.test(uri);
 }
@@ -187,7 +188,7 @@ export const convertImage = (image: string) => {
 // getSourceRefForAutomation returns the automation's sourceRef
 // depending on whether the automation is a Kustomization or a HelmRelease.
 export function getSourceRefForAutomation(
-  automation?: Automation
+  automation?: Automation,
 ): ObjectRef | undefined {
   return automation?.type === Kind.Kustomization
     ? (automation as Kustomization)?.sourceRef
@@ -199,17 +200,18 @@ export function getAppVersion(
   versionData: GetVersionResponse,
   defaultVersion: string,
   isLoading = false,
-  defaultVersionPrefix = ""
+  defaultVersionPrefix = "",
 ): AppVersion {
   const shouldDisplayApiVersion =
     !isLoading &&
-    (versionData?.semver || "").replace(/^v+/, "") !== defaultVersion &&
+    (versionData?.semver || "").replace(/^v+/, "") !==
+      defaultVersion.replace(/^v+/, "") &&
     versionData?.branch &&
     versionData?.commit;
 
   const versionText = shouldDisplayApiVersion
     ? `${versionData.branch}-${versionData.commit}`
-    : `${defaultVersionPrefix}${defaultVersion}`;
+    : `${defaultVersionPrefix}${defaultVersion.replace(/^v+/, "")}`;
   const versionHref = shouldDisplayApiVersion
     ? `${repoUrl}/commit/${versionData.commit}`
     : `${repoUrl}/releases/tag/v${defaultVersion}`;
@@ -247,14 +249,14 @@ export const createYamlCommand = (
   kind?: string,
   name?: string,
   namespace?: string,
-  path?: string
+  path?: string,
 ): string => {
   if (path) return path;
   if (kind && name) {
     const namespaceString = namespace ? ` -n ${namespace}` : "";
     return `kubectl get ${kind.toLowerCase()} ${name}${namespaceString} -o yaml`;
   }
-  return null;
+  return "";
 };
 
 export const Fade = styled<any>(Flex)<{
@@ -298,4 +300,10 @@ export function stripBasePath(pathname: string) {
   }
 
   return pathname;
+}
+
+export function svgToB64Image(mode, light, dark) {
+  const img = mode === ThemeTypes.Dark ? dark : light;
+  const str = decodeURIComponent(img.toString().replace(/data:image.*,/, ""));
+  return "data:image/svg+xml;base64," + Buffer.from(str).toString("base64");
 }

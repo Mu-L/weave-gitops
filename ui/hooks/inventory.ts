@@ -1,6 +1,6 @@
+import { useQuery } from "@tanstack/react-query";
 import _ from "lodash";
 import { useContext } from "react";
-import { useQuery } from "react-query";
 import { ReadyStatusValue, ReadyType } from "../components/KubeStatusIndicator";
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import { ListError } from "../lib/api/core/core.pb";
@@ -22,13 +22,13 @@ export function useGetInventory(
   opts: ReactQueryOptions<GetInventoryResponse, RequestError> = {
     retry: false,
     refetchInterval: (data) => (data ? false : 5000),
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
 
-  return useQuery<GetInventoryResponse, RequestError>(
-    ["get_inventory", namespace, kind, withChildren],
-    () =>
+  return useQuery<GetInventoryResponse, RequestError>({
+    queryKey: ["get_inventory", namespace, kind, withChildren],
+    queryFn: () =>
       api
         .GetInventory({ name, namespace, kind, clusterName, withChildren })
         .then((res) => {
@@ -37,8 +37,8 @@ export function useGetInventory(
             : res.entries?.map((obj) => new FluxObject(obj));
           return { objects: listObjects, errors: [] };
         }),
-    opts
-  );
+    ...opts,
+  });
 }
 
 function convertEntries(entries: InventoryEntry[]) {
@@ -80,7 +80,7 @@ export const createCanaryCondition = (objs: FluxObject[]): Condition => {
       }
       return prev;
     },
-    { True: 0, False: 0, Unknown: 0 }
+    { True: 0, False: 0, Unknown: 0 },
   );
   //create conditions object
   let condition: Condition = {

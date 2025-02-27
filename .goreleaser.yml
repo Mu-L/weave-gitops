@@ -1,3 +1,4 @@
+version: 2
 project_name: gitops
 env:
   - GO111MODULE=on
@@ -9,7 +10,7 @@ checksum:
 release:
   prerelease: auto
 archives:
-  - format: tar.gz
+  - formats: tar.gz
     name_template: >-
       gitops-
       {{- title .Os }}-
@@ -68,3 +69,9 @@ builds:
       - darwin
     goarch:
       - arm64
+signs:
+  - id: cosign-keyless
+    cmd: cosign
+    certificate: "${artifact}.crt"
+    args: ["sign-blob", "--output-signature", "${signature}", "--output-certificate", "${certificate}", "${artifact}", "--yes"]
+    artifacts: all

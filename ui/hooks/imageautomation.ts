@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useQuery } from "react-query";
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import { ListObjectsResponse } from "../lib/api/core/core.pb";
 import { NoNamespace, ReactQueryOptions, RequestError } from "../lib/types";
@@ -11,19 +11,19 @@ export function useListImageAutomation(
   opts: ReactQueryOptions<ListObjectsResponse, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
 
-  return useQuery<ListObjectsResponse, RequestError>(
-    ["image_automation", namespace, kind],
-    () =>
+  return useQuery<ListObjectsResponse, RequestError>({
+    queryKey: ["image_automation", namespace, kind],
+    queryFn: () =>
       api.ListObjects({ namespace, kind }).then((res) => {
         const providers = res.objects?.map((obj) => convertResponse(kind, obj));
         return { objects: providers, errors: res.errors };
       }),
-    opts
-  );
+    ...opts,
+  });
 }
 
 export function useCheckCRDInstalled(
@@ -31,16 +31,16 @@ export function useCheckCRDInstalled(
   opts: ReactQueryOptions<boolean, RequestError> = {
     retry: false,
     refetchInterval: (data) => (data ? false : 5000),
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
 
-  return useQuery<boolean, RequestError>(
-    ["image_automation_crd_available", name],
-    () =>
+  return useQuery<boolean, RequestError>({
+    queryKey: ["image_automation_crd_available", name],
+    queryFn: () =>
       api.IsCRDAvailable({ name }).then(({ clusters }) => {
         return Object.values(clusters).some((r) => r === true);
       }),
-    opts
-  );
+    ...opts,
+  });
 }

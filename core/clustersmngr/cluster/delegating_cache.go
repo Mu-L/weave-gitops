@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -16,6 +15,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
+
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 type delegatingCacheCluster struct {
@@ -46,7 +47,7 @@ func (c *delegatingCacheCluster) makeCachingClient(leafClient client.Client) (cl
 		return nil, fmt.Errorf("could not create HTTP client from config: %w", err)
 	}
 
-	mapper, err := apiutil.NewDiscoveryRESTMapper(c.restConfig, httpClient)
+	mapper, err := apiutil.NewDynamicRESTMapper(c.restConfig, httpClient)
 	if err != nil {
 		return nil, fmt.Errorf("could not create RESTMapper from config: %w", err)
 	}

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useRouteMatch } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import styled from "styled-components";
 import { useFeatureFlags } from "../../../hooks/featureflags";
@@ -19,6 +18,7 @@ import { ChipWrap, SectionWrapper } from "../Utils/PolicyUtils";
 import Severity from "../Utils/Severity";
 
 type Props = {
+  className?: string;
   policy: Policy;
 };
 
@@ -37,7 +37,6 @@ const PolicyDetails = ({ policy }: Props) => {
     howToSolve,
     parameters,
   } = policy;
-  const { path } = useRouteMatch();
 
   const { isFlagEnabled } = useFeatureFlags();
   const items: RowItem[] = [
@@ -99,18 +98,17 @@ const PolicyDetails = ({ policy }: Props) => {
     },
   ];
   return (
-    <SubRouterTabs rootPath={`${path}/details`}>
-      <RouterTab name="Details" path={`${path}/details`}>
+    <SubRouterTabs rootPath={`details`}>
+      <RouterTab name="Details" path="details">
         <Flex wide tall column gap="32">
           <HeaderRows items={items} />
           <SectionWrapper title="Description:">
-            <MarkdownEditor children={description || ""} />
+            <MarkdownEditor>{description || ""}</MarkdownEditor>
           </SectionWrapper>
           <SectionWrapper title="How to solve:">
-            <MarkdownEditor
-              children={howToSolve || ""}
-              remarkPlugins={[remarkGfm]}
-            />
+            <MarkdownEditor remarkPlugins={[remarkGfm]}>
+              {howToSolve || ""}
+            </MarkdownEditor>
           </SectionWrapper>
           <SectionWrapper title="Policy Code:">
             <YamlView type="rego" yaml={code} />
@@ -120,7 +118,7 @@ const PolicyDetails = ({ policy }: Props) => {
           </SectionWrapper>
         </Flex>
       </RouterTab>
-      <RouterTab name="Violations" path={`${path}/violations`}>
+      <RouterTab name="Violations" path="violations">
         <PolicyViolationsList
           req={{
             policyId: id,

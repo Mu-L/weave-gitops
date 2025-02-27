@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import { useListAlerts } from "../hooks/notifications";
 import { Kind } from "../lib/api/core/types.pb";
@@ -17,24 +16,23 @@ type Props = {
 };
 
 function ProviderDetail({ className, provider }: Props) {
-  const { path } = useRouteMatch();
   const { data, error } = useListAlerts(provider.provider, provider.namespace);
   return (
     <Flex column tall wide className={className}>
-      <SubRouterTabs rootPath={`${path}/alerts`}>
-        <RouterTab name="Alerts" path={`${path}/alerts`}>
+      <SubRouterTabs rootPath="alerts">
+        <RouterTab name="Alerts" path="alerts">
           {error ? (
             <Alert severity="error" message={error.message} />
           ) : (
             <AlertsTable rows={data?.objects} />
           )}
         </RouterTab>
-        <RouterTab name="Yaml" path={`${path}/yaml`}>
+        <RouterTab name="Yaml" path="yaml">
           <YamlView
             header={createYamlCommand(
               Kind.Provider,
               provider.name,
-              provider.namespace
+              provider.namespace,
             )}
             yaml={provider.yaml}
           />

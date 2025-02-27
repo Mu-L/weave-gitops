@@ -8,12 +8,13 @@ import (
 	"github.com/cheshir/ttlcache"
 	"github.com/google/go-cmp/cmp"
 	. "github.com/onsi/gomega"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/client-go/rest"
+
 	"github.com/weaveworks/weave-gitops/core/clustersmngr"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
 	"github.com/weaveworks/weave-gitops/pkg/kube"
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/rest"
 )
 
 func TestUsersNamespaces(t *testing.T) {
@@ -128,6 +129,7 @@ func TestClusterSet_Set(t *testing.T) {
 }
 
 func newTestCluster(t *testing.T, name, server string) cluster.Cluster {
+	t.Helper()
 	c, err := cluster.NewSingleCluster(name, &rest.Config{Host: server}, nil, kube.UserPrefixes{})
 	if err != nil {
 		t.Error("Expected error to be nil, got", err)

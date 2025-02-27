@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/onsi/gomega"
+
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
@@ -15,7 +16,6 @@ func TestInvariant(t *testing.T) {
 		authstring := method.String()
 
 		parsedMethod, err := auth.ParseAuthMethod(authstring)
-
 		if err != nil {
 			t.Fatalf("Auth methods should parse without error, got %s", err)
 		}

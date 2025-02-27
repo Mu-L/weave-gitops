@@ -6,16 +6,17 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"k8s.io/client-go/rest"
+
 	"github.com/weaveworks/weave-gitops/core/clustersmngr"
 	"github.com/weaveworks/weave-gitops/core/nsaccess"
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 	"github.com/weaveworks/weave-gitops/pkg/health"
 	"github.com/weaveworks/weave-gitops/pkg/services/crd"
-	"k8s.io/client-go/rest"
 )
 
 func Hydrate(ctx context.Context, mux *runtime.ServeMux, cfg CoreServerConfig) error {
-	appsServer, err := NewCoreServer(cfg)
+	appsServer, err := NewCoreServer(ctx, cfg)
 	if err != nil {
 		return fmt.Errorf("unable to create new kube client: %w", err)
 	}
@@ -68,9 +69,9 @@ func NewCoreConfig(log logr.Logger, cfg *rest.Config, clusterName string, cluste
 	}, nil
 }
 
-func NewCoreServer(cfg CoreServerConfig) (pb.CoreServer, error) {
+func NewCoreServer(ctx context.Context, cfg CoreServerConfig) (pb.CoreServer, error) {
 	if cfg.CRDService == nil {
-		cfg.CRDService = crd.NewFetcher(cfg.log, cfg.ClustersManager)
+		cfg.CRDService = crd.NewFetcher(ctx, cfg.log, cfg.ClustersManager)
 	}
 
 	return &coreServer{

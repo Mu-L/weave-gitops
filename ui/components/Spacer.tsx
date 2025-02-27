@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// eslint-disable-next-line
 import { spacing } from "../typedefs/styled";
 
 type Spacing = keyof typeof spacing;
@@ -22,5 +21,6 @@ const Spacer = styled.div<Props>`
   margin-right: ${mFn(2)};
   margin-left: ${mFn(3)};
 `;
+Spacer.shouldForwardProp = (prop) => !["padding", "margin"].includes(prop);
 
 export default Spacer;

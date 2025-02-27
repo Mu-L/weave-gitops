@@ -4,13 +4,13 @@ import (
 	"errors"
 	"testing"
 
+	. "github.com/onsi/gomega"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/version"
 	fakediscovery "k8s.io/client-go/discovery/fake"
 	fakeclientset "k8s.io/client-go/kubernetes/fake"
 	kubetesting "k8s.io/client-go/testing"
 
-	. "github.com/onsi/gomega"
 	"github.com/weaveworks/weave-gitops/pkg/services/check"
 )
 
@@ -18,7 +18,7 @@ func TestKubernetesVersionWithError(t *testing.T) {
 	g := NewWithT(t)
 
 	expectedError := errors.New("an error occurred")
-	fakeClient := fakeclientset.NewSimpleClientset()
+	fakeClient := fakeclientset.NewClientset()
 	fakeClient.Discovery().(*fakediscovery.FakeDiscovery).PrependReactor("*", "*", func(action kubetesting.Action) (handled bool, ret runtime.Object, err error) {
 		return true, nil, expectedError
 	})
@@ -56,7 +56,7 @@ func TestKubernetesVersion(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			g := NewWithT(t)
-			client := fakeclientset.NewSimpleClientset()
+			client := fakeclientset.NewClientset()
 			fakeDiscovery, ok := client.Discovery().(*fakediscovery.FakeDiscovery)
 			if !ok {
 				t.Fatalf("couldn't convert Discovery() to *FakeDiscovery")

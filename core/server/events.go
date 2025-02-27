@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/weaveworks/weave-gitops/core/clustersmngr"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/weaveworks/weave-gitops/core/clustersmngr"
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 func (cs *coreServer) ListEvents(ctx context.Context, msg *pb.ListEventsRequest) (*pb.ListEventsResponse, error) {
@@ -96,9 +97,9 @@ func list(ctx context.Context, k8s clustersmngr.Client, appName, namespace strin
 
 func wrapK8sAPIError(msg string, err error) error {
 	if k8serrors.IsUnauthorized(err) {
-		return status.Errorf(codes.PermissionDenied, err.Error())
+		return status.Errorf(codes.PermissionDenied, "%s", err.Error())
 	} else if k8serrors.IsNotFound(err) {
-		return status.Errorf(codes.NotFound, err.Error())
+		return status.Errorf(codes.NotFound, "%s", err.Error())
 	} else if err != nil {
 		return fmt.Errorf("%s: %w", msg, err)
 	}

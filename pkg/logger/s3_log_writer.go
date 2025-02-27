@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/weaveworks/weave-gitops/pkg/compositehash"
 	"strings"
 	"time"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/minio/minio-go/v7"
 
 	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/compositehash"
 )
 
 type S3LogWriter struct {
@@ -20,9 +20,11 @@ type S3LogWriter struct {
 	log0  Logger
 }
 
-const SessionLogBucketName = "gitops-run-logs"
-const PodLogBucketName = "pod-logs"
-const SessionLogSource = "gitops-run-client"
+const (
+	SessionLogBucketName = "gitops-run-logs"
+	PodLogBucketName     = "pod-logs"
+	SessionLogSource     = "gitops-run-client"
+)
 
 func (l *S3LogWriter) L() logr.Logger {
 	return l.log0.L()
@@ -45,7 +47,7 @@ func (l *S3LogWriter) putLog(msg string) {
 
 	level := "info"
 
-	if len(msg) > 0 {
+	if msg != "" {
 		if strings.HasPrefix(msg, "✗") {
 			level = "error"
 		} else if strings.HasPrefix(msg, "⚠️") {
@@ -65,10 +67,7 @@ func (l *S3LogWriter) putLog(msg string) {
 		Message:    msg,
 	}
 
-	logData, err := json.Marshal(result)
-	if err != nil {
-		l.log0.Failuref("failed to marshal log data to JSON: %v", err)
-	}
+	logData, _ := json.Marshal(result)
 
 	// append new line at the end of each log
 	logMsg := string(logData) + "\n"
@@ -78,7 +77,6 @@ func (l *S3LogWriter) putLog(msg string) {
 		// This funny pattern 20060102-150405.00000 is the layout needed by time.Format
 		fmt.Sprintf("%s/%s.txt", l.id, now.Format("20060102-150405.00000")),
 		strings.NewReader(logMsg), int64(len(logMsg)), minio.PutObjectOptions{})
-
 	if err != nil {
 		l.log0.Failuref("failed to put log to s3: %v", err)
 	}

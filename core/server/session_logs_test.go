@@ -4,20 +4,19 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	sourcev1b2 "github.com/fluxcd/source-controller/api/v1beta2"
 	"io"
 	"strings"
 	"testing"
 	"time"
 
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-
-	. "github.com/onsi/gomega"
-
+	sourcev1 "github.com/fluxcd/source-controller/api/v1"
 	"github.com/minio/minio-go/v7"
+	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
 )
 
 type mockGet struct {
@@ -33,7 +32,7 @@ func (m *mockGet) Get(ctx context.Context, key types.NamespacedName, obj client.
 			"accesskey": []byte("abcd"),
 			"secretkey": []byte("1234"),
 		}
-	case *sourcev1b2.Bucket:
+	case *sourcev1.Bucket:
 		obj.Spec.Endpoint = "endpoint:9000"
 		obj.Spec.Insecure = false
 	}
@@ -45,7 +44,6 @@ func TestGetBucketConnectionInfo(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	type args struct {
-		ctx         context.Context
 		clusterName string
 		ns          string
 		cli         client.Client
@@ -60,7 +58,6 @@ func TestGetBucketConnectionInfo(t *testing.T) {
 		{
 			name: "default",
 			args: args{
-				ctx:         context.TODO(),
 				clusterName: "Default",
 				ns:          "default",
 				cli:         &mockGet{},
@@ -76,7 +73,6 @@ func TestGetBucketConnectionInfo(t *testing.T) {
 		{
 			name: "test",
 			args: args{
-				ctx:         context.TODO(),
 				clusterName: "my-session/run-session",
 				ns:          "default",
 				cli:         &mockGet{},
@@ -92,14 +88,13 @@ func TestGetBucketConnectionInfo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		info, err := getBucketConnectionInfo(tt.args.ctx, tt.args.clusterName, tt.args.ns, tt.args.cli)
+		info, err := getBucketConnectionInfo(context.TODO(), tt.args.clusterName, tt.args.ns, tt.args.cli)
 		g.Expect(err != nil).To(Equal(tt.wantErr))
 		g.Expect(info).To(Equal(tt.want))
 	}
 }
 
-type mockS3Reader struct {
-}
+type mockS3Reader struct{}
 
 var _ = s3Reader(&mockS3Reader{})
 
@@ -136,10 +131,7 @@ func (m *mockS3Reader) GetObject(ctx context.Context, bucketName, objectName str
 			Level:     "info",
 			Source:    "gitops-run-client",
 		}
-		b, err := json.Marshal(o)
-		if err != nil {
-			return nil, err
-		}
+		b, _ := json.Marshal(o)
 		return io.NopCloser(strings.NewReader(string(b))), nil
 	case "error":
 		return nil, fmt.Errorf("error")
@@ -152,7 +144,6 @@ func TestGitOpsRunLogs(t *testing.T) {
 	g := NewGomegaWithT(t)
 
 	type args struct {
-		ctx        context.Context
 		sessionID  string
 		nextToken  string
 		minio      s3Reader
@@ -169,7 +160,6 @@ func TestGitOpsRunLogs(t *testing.T) {
 		{
 			name: "test",
 			args: args{
-				ctx:        context.TODO(),
 				sessionID:  "test",
 				nextToken:  "test",
 				minio:      &mockS3Reader{},
@@ -187,7 +177,6 @@ func TestGitOpsRunLogs(t *testing.T) {
 		{
 			name: "error",
 			args: args{
-				ctx:        context.TODO(),
 				sessionID:  "error",
 				nextToken:  "error",
 				minio:      &mockS3Reader{},
@@ -201,7 +190,7 @@ func TestGitOpsRunLogs(t *testing.T) {
 
 	for _, tt := range tests {
 		got, token, err := getGitOpsRunLogs(
-			tt.args.ctx,
+			context.TODO(),
 			tt.args.sessionID,
 			tt.args.nextToken,
 			tt.args.minio,

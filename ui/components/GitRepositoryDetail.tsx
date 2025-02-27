@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { JSX } from "react";
 import styled from "styled-components";
 import Link from "../components/Link";
 import SourceDetail from "../components/SourceDetail";
@@ -31,7 +32,10 @@ function GitRepositoryDetail({
     ? [
         [
           "Cluster",
-          <ClusterDashboardLink clusterName={gitRepository?.clusterName} />,
+          <ClusterDashboardLink
+            key={gitRepository.uid}
+            clusterName={gitRepository?.clusterName}
+          />,
         ],
       ]
     : [];
@@ -46,12 +50,22 @@ function GitRepositoryDetail({
         ["Kind", Kind.GitRepository],
         [
           "URL",
-          <Link newTab href={convertGitURLToGitProvider(gitRepository.url)}>
+          <Link
+            key={gitRepository.uid}
+            newTab
+            href={convertGitURLToGitProvider(gitRepository.url)}
+          >
             {gitRepository.url}
           </Link>,
         ],
         ["Ref", gitRepository.reference?.branch],
-        ["Last Updated", <Timestamp time={gitRepository.lastUpdatedAt} />],
+        [
+          "Last Updated",
+          <Timestamp
+            key={gitRepository.uid}
+            time={gitRepository.lastUpdatedAt}
+          />,
+        ],
         ...clusterInfo,
         ["Namespace", gitRepository.namespace],
         ...tenancyInfo,

@@ -8,6 +8,16 @@ import (
 	"testing"
 
 	"github.com/go-logr/logr"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/test/bufconn"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/client-go/kubernetes/fake"
+	typedauth "k8s.io/client-go/kubernetes/typed/authorization/v1"
+	"k8s.io/client-go/rest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
 	"github.com/weaveworks/weave-gitops/core/clustersmngr"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster"
 	"github.com/weaveworks/weave-gitops/core/clustersmngr/cluster/clusterfakes"
@@ -20,27 +30,18 @@ import (
 	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	"github.com/weaveworks/weave-gitops/pkg/services/crd"
 	"github.com/weaveworks/weave-gitops/pkg/testutils"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/test/bufconn"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/client-go/kubernetes/fake"
-	typedauth "k8s.io/client-go/kubernetes/typed/authorization/v1"
-	"k8s.io/client-go/rest"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-var k8sEnv *testutils.K8sTestEnv
-var nsChecker nsaccessfakes.FakeChecker
+var (
+	k8sEnv    *testutils.K8sTestEnv
+	nsChecker nsaccessfakes.FakeChecker
+)
 
 func TestMain(m *testing.M) {
 	var err error
 	k8sEnv, err = testutils.StartK8sTestEnvironment([]string{
-		"../../manifests/crds",
 		"../../tools/testcrds",
 	})
-
 	if err != nil {
 		panic(err)
 	}
@@ -52,7 +53,8 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func makeGRPCServer(cfg *rest.Config, t *testing.T) pb.CoreClient {
+func makeGRPCServer(ctx context.Context, t *testing.T, cfg *rest.Config) pb.CoreClient {
+	t.Helper()
 	log := logr.Discard()
 	nsChecker = nsaccessfakes.FakeChecker{}
 	nsChecker.FilterAccessibleNamespacesStub = func(ctx context.Context, t typedauth.AuthorizationV1Interface, n []v1.Namespace) ([]v1.Namespace, error) {
@@ -62,12 +64,12 @@ func makeGRPCServer(cfg *rest.Config, t *testing.T) pb.CoreClient {
 
 	scheme, err := kube.CreateScheme()
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create scheme: %v", err)
 	}
 
 	cluster, err := cluster.NewSingleCluster("Default", k8sEnv.Rest, scheme, kube.UserPrefixes{})
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create cluster: %v", err)
 	}
 
 	fetch := fetcher.NewSingleClusterFetcher(cluster)
@@ -77,15 +79,15 @@ func makeGRPCServer(cfg *rest.Config, t *testing.T) pb.CoreClient {
 	clustersManager := clustersmngr.NewClustersManager([]clustersmngr.ClusterFetcher{fetch}, &nsChecker, log)
 	coreCfg, err := server.NewCoreConfig(log, cfg, "foobar", clustersManager, hc)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create CoreConfig: %v", err)
 	}
 
 	coreCfg.NSAccess = &nsChecker
 	coreCfg.CRDService = crd.NewNoCacheFetcher(clustersManager)
 
-	core, err := server.NewCoreServer(coreCfg)
+	core, err := server.NewCoreServer(ctx, coreCfg)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create CoreServer: %v", err)
 	}
 
 	lis := bufconn.Listen(1024 * 1024)
@@ -100,20 +102,20 @@ func makeGRPCServer(cfg *rest.Config, t *testing.T) pb.CoreClient {
 		return lis.Dial()
 	}
 
-	go func(tt *testing.T) {
+	go func(t *testing.T) {
+		t.Helper()
 		if err := s.Serve(lis); err != nil {
-			tt.Error(err)
+			t.Errorf("Failed to serve: %v", err)
 		}
 	}(t)
 
-	conn, err := grpc.DialContext(
-		context.Background(),
-		"bufnet",
+	conn, err := grpc.NewClient(
+		"passthrough://bufnet",
 		grpc.WithContextDialer(dialer),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to dial bufnet: %v", err)
 	}
 
 	t.Cleanup(func() {
@@ -136,10 +138,10 @@ const (
 func withClientsPoolInterceptor(clustersManager clustersmngr.ClustersManager) grpc.ServerOption {
 	return grpc.UnaryInterceptor(func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		if err := clustersManager.UpdateClusters(ctx); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to update clusters: %w", err)
 		}
 		if err := clustersManager.UpdateNamespaces(ctx); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to update namespaces: %w", err)
 		}
 
 		md, ok := metadata.FromIncomingContext(ctx)
@@ -161,14 +163,15 @@ func withClientsPoolInterceptor(clustersManager clustersmngr.ClustersManager) gr
 	})
 }
 
-func makeServerConfig(fakeClient client.Client, t *testing.T, clusterName string) server.CoreServerConfig {
+func makeServerConfig(t *testing.T, fakeClient client.Client, clusterName string) server.CoreServerConfig {
+	t.Helper()
 	log := logr.Discard()
 	nsChecker = nsaccessfakes.FakeChecker{}
 	nsChecker.FilterAccessibleNamespacesStub = func(ctx context.Context, t typedauth.AuthorizationV1Interface, n []v1.Namespace) ([]v1.Namespace, error) {
 		// Pretend the user has access to everything
 		return n, nil
 	}
-	clientset := fake.NewSimpleClientset()
+	clientset := fake.NewClientset()
 
 	cluster := clusterfakes.FakeCluster{}
 
@@ -191,7 +194,7 @@ func makeServerConfig(fakeClient client.Client, t *testing.T, clusterName string
 
 	coreCfg, err := server.NewCoreConfig(log, &rest.Config{}, "foobar", clustersManager, hc)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create CoreServerConfig: %v", err)
 	}
 
 	coreCfg.NSAccess = &nsChecker
@@ -199,10 +202,11 @@ func makeServerConfig(fakeClient client.Client, t *testing.T, clusterName string
 	return coreCfg
 }
 
-func makeServer(cfg server.CoreServerConfig, t *testing.T) pb.CoreClient {
-	core, err := server.NewCoreServer(cfg)
+func makeServer(ctx context.Context, t *testing.T, cfg server.CoreServerConfig) pb.CoreClient {
+	t.Helper()
+	core, err := server.NewCoreServer(ctx, cfg)
 	if err != nil {
-		t.Fatal(err)
+		t.Fatalf("Failed to create CoreServer: %v", err)
 	}
 
 	lis := bufconn.Listen(1024 * 1024)
@@ -213,25 +217,14 @@ func makeServer(cfg server.CoreServerConfig, t *testing.T) pb.CoreClient {
 
 	pb.RegisterCoreServer(s, core)
 
-	dialer := func(context.Context, string) (net.Conn, error) {
-		return lis.Dial()
-	}
-
-	go func(tt *testing.T) {
+	go func(t *testing.T) {
+		t.Helper()
 		if err := s.Serve(lis); err != nil {
-			tt.Error(err)
+			t.Errorf("Failed to serve: %v", err)
 		}
 	}(t)
 
-	conn, err := grpc.DialContext(
-		context.Background(),
-		"bufnet",
-		grpc.WithContextDialer(dialer),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		t.Fatal(err)
-	}
+	conn := dialBufnet(t, lis)
 
 	t.Cleanup(func() {
 		s.GracefulStop()
@@ -239,4 +232,21 @@ func makeServer(cfg server.CoreServerConfig, t *testing.T) pb.CoreClient {
 	})
 
 	return pb.NewCoreClient(conn)
+}
+
+func dialBufnet(t *testing.T, lis *bufconn.Listener) *grpc.ClientConn {
+	t.Helper()
+	dialer := func(context.Context, string) (net.Conn, error) {
+		return lis.Dial()
+	}
+
+	conn, err := grpc.NewClient(
+		"passthrough://bufnet",
+		grpc.WithContextDialer(dialer),
+		grpc.WithTransportCredentials(insecure.NewCredentials()), // Insecure for testing
+	)
+	if err != nil {
+		t.Fatalf("Failed to dial bufnet: %v", err)
+	}
+	return conn
 }

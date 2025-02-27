@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -10,10 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/tomwright/dasel"
-	yaml "gopkg.in/yaml.v3"
-
-	validation "k8s.io/apimachinery/pkg/api/validation"
+	"github.com/tomwright/dasel/v2"
+	"gopkg.in/yaml.v3"
+	"k8s.io/apimachinery/pkg/api/validation"
 )
 
 // WaitUntil runs checkDone until an error is NOT returned, or a timeout is reached.
@@ -123,44 +123,50 @@ func FindCoreConfig(dir string) WalkResult {
 
 			for {
 				var entry map[string]interface{}
-				if err := decoder.Decode(&entry); err == io.EOF {
+				if err := decoder.Decode(&entry); errors.Is(err, io.EOF) {
 					break
 				}
 
 				docs = append(docs, entry)
 			}
 
-			rootNode := dasel.New(docs)
-			foundPartial := false
+			rootNode := dasel.ValueOf(docs)
+			var foundHelmRelease, foundHelmRepository bool
 
-			_, err = rootNode.QueryMultiple(fmt.Sprintf(".(kind=HelmRelease)(.metadata.name=%s)", coreManifestName))
-			if err == nil {
-				foundPartial = true
-			}
-
-			_, err = rootNode.QueryMultiple(fmt.Sprintf(".(kind=HelmRepository)(.metadata.name=%s)", coreManifestName))
+			val, err := dasel.Select(rootNode, fmt.Sprintf("all().filter(equal(kind,HelmRelease),equal(metadata.name,%s)).count()", coreManifestName))
 			if err != nil {
-				if foundPartial {
-					return WalkResult{Status: Partial, Path: path}
-				}
+				return nil
+			}
+			foundHelmRelease = val.Interfaces()[0] != 0
 
+			val, err = dasel.Select(rootNode, fmt.Sprintf("all().filter(equal(kind,HelmRepository),equal(metadata.name,%s)).count()", coreManifestName))
+			if err != nil {
+				return nil
+			}
+			foundHelmRepository = val.Interfaces()[0] != 0
+
+			if foundHelmRelease != foundHelmRepository {
+				return WalkResult{Status: Partial, Path: path}
+			}
+			if !foundHelmRelease && !foundHelmRepository {
 				return nil
 			}
 
 			// retrieve the number of top-level entries from the file
-			val, err := rootNode.Query(".[#]")
+			val, err = dasel.Select(rootNode, "all().count()")
 			if err != nil {
 				return nil
 			}
 
-			if val.InterfaceValue() != coreManifestCount {
+			if val.Interfaces()[0] != coreManifestCount {
 				return WalkResult{Status: Embedded, Path: path}
 			}
 
 			return WalkResult{Status: Valid, Path: path}
 		})
 
-	if val, ok := err.(WalkResult); ok {
+	var val WalkResult
+	if errors.As(err, &val) {
 		return val
 	}
 

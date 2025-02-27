@@ -1,24 +1,19 @@
 package kube
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 
-	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	helmv2 "github.com/fluxcd/helm-controller/api/v2beta2"
-	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta1"
+	helmv2 "github.com/fluxcd/helm-controller/api/v2"
+	imgautomationv1 "github.com/fluxcd/image-automation-controller/api/v1beta2"
 	reflectorv1 "github.com/fluxcd/image-reflector-controller/api/v1beta2"
 	kustomizev1 "github.com/fluxcd/kustomize-controller/api/v1"
 	notificationv1 "github.com/fluxcd/notification-controller/api/v1"
-	notificationv1b2 "github.com/fluxcd/notification-controller/api/v1beta2"
+	notificationv1b3 "github.com/fluxcd/notification-controller/api/v1beta3"
 	sourcev1 "github.com/fluxcd/source-controller/api/v1"
 	sourcev1b2 "github.com/fluxcd/source-controller/api/v1beta2"
-	"github.com/pkg/errors"
-	pacv2beta2 "github.com/weaveworks/policy-agent/api/v2beta2"
 	appsv1 "k8s.io/api/apps/v1"
 	authv1 "k8s.io/api/authentication/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -26,6 +21,11 @@ import (
 	extensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	pacv2beta2 "github.com/weaveworks/policy-agent/api/v2beta2"
 )
 
 func CreateScheme() (*apiruntime.Scheme, error) {
@@ -42,7 +42,7 @@ func CreateScheme() (*apiruntime.Scheme, error) {
 		rbacv1.AddToScheme,
 		authv1.AddToScheme,
 		notificationv1.AddToScheme,
-		notificationv1b2.AddToScheme,
+		notificationv1b3.AddToScheme,
 		pacv2beta2.AddToScheme,
 		reflectorv1.AddToScheme,
 		imgautomationv1.AddToScheme,
@@ -56,20 +56,20 @@ func CreateScheme() (*apiruntime.Scheme, error) {
 	return scheme, nil
 }
 
-const WeGOCRDName = "apps.wego.weave.works"
-const FluxNamespace = "flux-system"
+const (
+	WeGOCRDName   = "apps.wego.weave.works"
+	FluxNamespace = "flux-system"
+)
 
 const (
 	WegoConfigMapName = "weave-gitops-config"
 )
 
-var (
-	// ErrWegoConfigNotFound indicates weave gitops config could not be found
-	ErrWegoConfigNotFound = errors.New("Wego Config not found")
-)
+// ErrWegoConfigNotFound indicates weave gitops config could not be found
+var ErrWegoConfigNotFound = errors.New("wego config not found")
 
 // InClusterConfig defines a function for checking if this code is executing in kubernetes.
-// This can be overriden if needed.
+// This can be overridden if needed.
 var InClusterConfig func() (*rest.Config, error) = rest.InClusterConfig
 
 var ErrNamespaceNotFound = errors.New("namespace not found")
@@ -109,7 +109,7 @@ func NewKubeHTTPClient() (*KubeHTTP, error) {
 func RestConfig() (*rest.Config, string, error) {
 	config, err := InClusterConfig()
 	if err != nil {
-		if err == rest.ErrNotInCluster {
+		if errors.Is(err, rest.ErrNotInCluster) {
 			return outOfClusterConfig()
 		}
 		// Handle other errors

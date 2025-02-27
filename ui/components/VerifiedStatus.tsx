@@ -1,5 +1,5 @@
-import { Tooltip } from "@material-ui/core";
-import React from "react";
+import { Tooltip } from "@mui/material";
+import React, { type JSX } from "react";
 import { useListSources } from "../hooks/sources";
 import { Condition, ObjectRef } from "../lib/api/core/types.pb";
 import { GitRepository, OCIRepository } from "../lib/objects";
@@ -37,7 +37,7 @@ const getStatusIcon = (source) => {
 };
 
 export const findVerificationCondition = (
-  a: VerifiableSource
+  a: VerifiableSource,
 ): Condition | undefined =>
   a?.conditions?.find((condition) => condition.type === "SourceVerified");
 
@@ -56,7 +56,7 @@ export const SourceIsVerifiedStatus: React.FC<{ sourceRef: ObjectRef }> = ({
 }): JSX.Element | null => {
   const { data: sources } = useListSources();
   const currentSource = sources?.result.find(
-    (source) => sourceRef?.name === source.name
+    (source) => sourceRef?.name === source.name,
   ) as GitRepository | OCIRepository | undefined;
 
   if (!currentSource?.isVerifiable) return <Flex>-</Flex>;

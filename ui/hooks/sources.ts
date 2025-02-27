@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useQuery } from "react-query";
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import { ListObjectsResponse } from "../lib/api/core/core.pb";
 import { Kind } from "../lib/api/core/types.pb";
@@ -25,13 +25,13 @@ export function useListSources(
   opts: ReactQueryOptions<Res, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
 
-  return useQuery<Res, RequestError>(
-    ["sources", namespace],
-    () => {
+  return useQuery<Res, RequestError>({
+    queryKey: ["sources", namespace],
+    queryFn: () => {
       const p = [
         Kind.GitRepository,
         Kind.HelmRepository,
@@ -45,19 +45,19 @@ export function useListSources(
             if (!response.objects) response.objects = [];
             if (!response.errors) response.errors = [];
             return { kind, response };
-          })
+          }),
       );
       return Promise.all(p).then((responses) => {
         const final: Res = { result: [], errors: [], searchedNamespaces: {} };
         for (const { kind, response } of responses) {
           final.result.push(
-            ...response.objects.map((o) => convertResponse(kind, o) as Source)
+            ...response.objects.map((o) => convertResponse(kind, o) as Source),
           );
           if (response.errors.length) {
             final.errors.push(
               ...response.errors.map((o) => {
                 return { ...o, kind };
-              })
+              }),
             );
           }
           final.searchedNamespaces[kind] = response.searchedNamespaces;
@@ -65,6 +65,6 @@ export function useListSources(
         return final;
       });
     },
-    opts
-  );
+    ...opts,
+  });
 }

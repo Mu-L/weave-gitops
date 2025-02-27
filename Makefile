@@ -7,7 +7,7 @@ BUILD_TIME?=$(shell date +'%Y-%m-%d_%T')
 BRANCH?=$(shell which git > /dev/null && git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT?=$(shell which git > /dev/null && git log -n1 --pretty='%h')
 VERSION?=$(shell which git > /dev/null && git describe --always --match "v*")
-FLUX_VERSION=2.0.1
+FLUX_VERSION=2.5.1
 CHART_VERSION=$(shell which yq > /dev/null && yq e '.version' charts/gitops-server/Chart.yaml)
 TIER=oss
 
@@ -55,10 +55,12 @@ TEST_TO_RUN?=./...
 TEST_V?=-v
 ##@ Test
 unit-tests: ## Run unit tests
-	@go install github.com/onsi/ginkgo/v2/ginkgo@v2.1.3
+	# As long as we have a dependency to Ginko in the main module,
+	# the following command should pick up the correct version from go.mod.
+	@go install github.com/onsi/ginkgo/v2/ginkgo
 	# This tool doesn't have releases - it also is only a shim
 	@go install sigs.k8s.io/controller-runtime/tools/setup-envtest@latest
-	KUBEBUILDER_ASSETS=$$(setup-envtest use -p path 1.24.2) CGO_ENABLED=0 ginkgo $(TEST_V) -tags unittest $(TEST_TO_RUN)
+	KUBEBUILDER_ASSETS=$$(setup-envtest use -p path 1.32.0) CGO_ENABLED=1 ginkgo $(TEST_V) -race -tags unittest $(TEST_TO_RUN)
 
 local-kind-cluster-with-registry:
 	./tools/kind-with-registry.sh
@@ -96,12 +98,10 @@ gitops: bin/gitops ## Build the Gitops CLI, accepts a 'DEBUG' flag
 
 gitops-server: bin/gitops-server ## Build the Gitops UI server, accepts a 'DEBUG' flag
 
-gitops-bucket-server: bin/gitops-bucket-server ## Build the GitOps bucket server, accepts a 'DEBUG' flag
-
 # Clean up images and binaries
 clean: ## Clean up images and binaries
-#	Clean up everything. This includes files git has been told to ignore (-x) and directories (-d)
-	git clean -x -d --force --exclude .idea
+	# Clean up everything. This includes files git has been told to ignore (-x) and directories (-d)
+	git clean -xfd -e .idea -e *.iml
 
 fmt: ## Run go fmt against code
 	go fmt ./...
@@ -109,11 +109,13 @@ fmt: ## Run go fmt against code
 vet: ## Run go vet against code
 	go vet ./...
 
-lint: ## Run linters against code
-	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.52.0
-	golangci-lint run --out-format=github-actions --timeout 600s --skip-files "tilt_modules"
-	@go install github.com/yoheimuta/protolint/cmd/protolint@latest
-	protolint lint -config_path=.protolint.yaml ./api
+lint: golangci-lint protolint ## Run linters against code
+	$(GOLANGCI_LINT) run
+	$(PROTOLINT) lint -config_path=.protolint.yaml ./api
+
+lint-fix: golangci-lint protolint ## Fix auto-fixable lint issues in code
+	$(GOLANGCI_LINT) run --fix
+	$(PROTOLINT) lint -fix -config_path=.protolint.yaml ./api
 
 check-format:FORMAT_LIST=$(shell which gofmt > /dev/null && gofmt -l .)
 check-format: ## Check go format
@@ -123,7 +125,7 @@ check-format: ## Check go format
 	fi
 
 proto-deps: ## Update protobuf dependencies
-	buf mod update
+	buf dep update
 
 proto: ## Generate protobuf files
 	@# The ones with no version use the library inside the code already
@@ -132,8 +134,8 @@ proto: ## Generate protobuf files
 	  github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
 	  google.golang.org/protobuf/cmd/protoc-gen-go
 	@go install github.com/grpc-ecosystem/protoc-gen-grpc-gateway-ts
-	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
-	@go install github.com/bufbuild/buf/cmd/buf@v1.1.0
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.5.1
+	@go install github.com/bufbuild/buf/cmd/buf@v1.48.0
 	buf generate
 #	This job is complaining about a missing plugin and error-ing out
 #	oapi-codegen -config oapi-codegen.config.yaml api/applications/applications.swagger.json
@@ -141,7 +143,7 @@ proto: ## Generate protobuf files
 # Sometimes we get whitespace differences when running this on linux vs mac
 # So here's how you can do it under linux, on mac
 proto-linux:
-	docker run --rm -v "$(CURRENT_DIR):/app" -w /app golang:1.20 make proto
+	docker run --rm -v "$(CURRENT_DIR):/app" -w /app golang:1.23.2 make proto
 
 ##@ Docker
 _docker:
@@ -158,10 +160,6 @@ docker-gitops-server: DOCKERFILE:=gitops-server.dockerfile
 docker-gitops-server: DOCKER_IMAGE_NAME?=$(DEFAULT_DOCKER_REPO)/gitops-server
 docker-gitops-server: _docker ## Build a Docker image of the Gitops UI Server
 
-docker-gitops-bucket-server: DOCKERFILE:=gitops-bucket-server.dockerfile
-docker-gitops-bucket-server: DOCKER_IMAGE_NAME?=$(DEFAULT_DOCKER_REPO)/gitops-bucket-server
-docker-gitops-bucket-server: _docker ## Build a Docker image of the Gitops UI Server
-
 ##@ UI
 # Build the UI for embedding
 ui: node_modules $(shell find ui -type f) ## Build the UI
@@ -169,7 +167,7 @@ ui: node_modules $(shell find ui -type f) ## Build the UI
 
 node_modules: ## Install node modules
 	rm -rf .parcel-cache
-	yarn config set network-timeout 600000 && yarn --frozen-lockfile
+	yarn --immutable --network-timeout 600000
 
 ui-lint: ## Run linter against the UI
 	yarn lint
@@ -188,7 +186,7 @@ ui-test: ## Run UI tests
 	yarn test
 
 ui-audit: ## Run audit against the UI
-	yarn audit --production
+	yarn npm audit --environment production
 
 ui-audit-fix: ## Fix UI audit errors
 	yarn yarn-audit-fix
@@ -205,16 +203,6 @@ dist/index.js: ui/index.ts
 dist/index.d.ts: ui/index.ts
 	yarn typedefs
 
-# Runs a test to raise errors if the integration between Gitops Core and EE is
-# in danger of breaking due to package API changes.
-# See the test/library dockerfile and test.sh script for more info.
-lib-test: dependencies ## Run the library integration test
-	docker build -t gitops-library-test -f test/library/libtest.dockerfile $(CURRENT_DIR)/test/library
-	docker run -e GITHUB_TOKEN=$$GITHUB_TOKEN -i --rm \
-		-v $(CURRENT_DIR):/go/src/github.com/weaveworks/weave-gitops \
-		 gitops-library-test
-
-
 ##@ Utilities
 tls-files:
 	@go install filippo.io/mkcert@v1.4.3
@@ -229,14 +217,9 @@ echo-flux-version:
 	@echo $(FLUX_VERSION)
 
 download-test-crds:
-	group_resources="source/helmrepositories source/buckets source/gitrepositories source/helmcharts source/ocirepositories"; \
-	for group_resource in $$group_resources; do \
-		group="$${group_resource%/*}"; resource="$${group_resource#*/}"; \
-		echo "Downloading $${group}.$${resource}"; \
-		curl -sL "https://raw.githubusercontent.com/fluxcd/source-controller/v1.0.0/config/crd/bases/$${group}.toolkit.fluxcd.io_$${resource}.yaml" -o "tools/testcrds/$${group}.toolkit.fluxcd.io_$${resource}.yaml"; \
-	done
-	curl -sL "https://raw.githubusercontent.com/fluxcd/kustomize-controller/v1.0.0/config/crd/bases/kustomize.toolkit.fluxcd.io_kustomizations.yaml" -o "tools/testcrds/kustomize.toolkit.fluxcd.io_kustomizations.yaml"
-	curl -sL "https://raw.githubusercontent.com/fluxcd/helm-controller/v0.37.0/config/crd/bases/helm.toolkit.fluxcd.io_helmreleases.yaml" -o "tools/testcrds/helm.toolkit.fluxcd.io_helmreleases.yaml"
+	curl -sSL https://github.com/fluxcd/flux2/releases/download/v$(FLUX_VERSION)/install.yaml \
+	| yq e '. | select(.kind == "CustomResourceDefinition")' \
+	> tools/testcrds/flux.yaml
 
 .PHONY: help
 # Thanks to https://www.thapaliya.com/en/writings/well-documented-makefiles/
@@ -246,3 +229,22 @@ ifeq ($(OS),Windows_NT)
 else
 				@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-40s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 endif
+
+## Tool Binaries
+
+GOLANGCI_LINT_VERSION ?= v1.63.4
+PROTOLINT_VERSION ?= v0.52.0
+
+LOCALBIN ?= $(shell pwd)/bin
+$(LOCALBIN):
+	mkdir -p $(LOCALBIN)
+
+GOLANGCI_LINT = $(LOCALBIN)/golangci-lint
+golangci-lint: $(GOLANGCI_LINT) ## Download golangci-lint locally if necessary.
+$(GOLANGCI_LINT):
+	GOBIN=$(LOCALBIN) go install github.com/golangci/golangci-lint/cmd/golangci-lint@${GOLANGCI_LINT_VERSION}
+
+PROTOLINT = $(LOCALBIN)/protolint
+protolint: $(PROTOLINT) ## Download protolint locally if necessary.
+$(PROTOLINT):
+	GOBIN=$(LOCALBIN) go install github.com/yoheimuta/protolint/cmd/protolint@${PROTOLINT_VERSION}

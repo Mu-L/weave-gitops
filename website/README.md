@@ -4,7 +4,7 @@ This website is built using [Docusaurus 2](https://docusaurus.io/), a modern sta
 It requires Node.js installed on your system. Install or Update your current setup for Node.js from [here](https://nodejs.org/en/download/)
 Install yarn from [here](https://classic.yarnpkg.com/en/docs/install)
 
-The website is live [here](https://docs.gitops.weave.works/).
+The website is live [here](https://docs.gitops.weaveworks.org/).
 
 ## Developing the docs
 
@@ -128,7 +128,8 @@ Smaller chunks are usually fine. But for anything more that 10 lines it is
 neater to wrap it.
 
 ~~~markdown
-<details><summary>Expand to see this awesome HelmRepository</summary>
+<details>
+<summary>Expand to see this awesome HelmRepository</summary>
 
 Don't forget to leave a line break below the opening tag...
 ```yaml
@@ -141,7 +142,8 @@ and before the closing one.
 </details>
 ~~~
 
-<details><summary>Expand to see this awesome HelmRepository</summary>
+<details>
+<summary>Expand to see this awesome HelmRepository</summary>
 
 Don't forget to leave a line break below the opening tag...
 ```

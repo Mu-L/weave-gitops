@@ -4,18 +4,21 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 
 	"github.com/hashicorp/go-cleanhttp"
-	"github.com/weaveworks/weave-gitops/pkg/logger"
-	"github.com/weaveworks/weave-gitops/pkg/sourceignore"
 	"github.com/yannh/kubeconform/pkg/output"
 	"github.com/yannh/kubeconform/pkg/resource"
 	"github.com/yannh/kubeconform/pkg/validator"
+
+	"github.com/weaveworks/weave-gitops/pkg/logger"
+	"github.com/weaveworks/weave-gitops/pkg/sourceignore"
 )
 
 func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVersion string) error {
@@ -39,7 +42,6 @@ func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVers
 		cli := cleanhttp.DefaultClient()
 		url := fmt.Sprintf("https://github.com/fluxcd/flux2/releases/download/%s/crd-schemas.tar.gz", fluxVersion)
 		response, err := cli.Get(url)
-
 		if err != nil {
 			return err
 		}
@@ -106,12 +108,11 @@ func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVers
 
 		return nil
 	})
-
 	if err != nil {
 		return err
 	}
 
-	if o, err = output.New("text", false, false, false); err != nil {
+	if o, err = output.New(os.Stdout, "text", false, false, false); err != nil {
 		return err
 	}
 
@@ -141,7 +142,6 @@ func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVers
 		Strict:               true,
 		IgnoreMissingSchemas: true,
 	})
-
 	if err != nil {
 		return err
 	}
@@ -152,11 +152,11 @@ func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVers
 
 	var (
 		resourcesChan          <-chan resource.Resource
-		errors                 <-chan error
+		errorsChan             <-chan error
 		ignoreFilenamePatterns []string
 	)
 
-	resourcesChan, errors = resource.FromFiles(ctx, files, ignoreFilenamePatterns)
+	resourcesChan, errorsChan = resource.FromFiles(ctx, files, ignoreFilenamePatterns)
 
 	// Process discovered resources across multiple workers
 	const numberOfWorkers = 4
@@ -178,15 +178,16 @@ func Validate(log logger.Logger, targetDir, rootDir, kubernetesVersion, fluxVers
 
 	go func() {
 		// Process errors while discovering resources
-		for err := range errors {
+		for err := range errorsChan {
 			if err == nil {
 				continue
 			}
 
-			if err, ok := err.(resource.DiscoveryError); ok {
+			var derr resource.DiscoveryError
+			if errors.As(err, &derr) {
 				validationResults <- validator.Result{
-					Resource: resource.Resource{Path: err.Path},
-					Err:      err.Err,
+					Resource: resource.Resource{Path: derr.Path},
+					Err:      derr.Err,
 					Status:   validator.Error,
 				}
 			} else {
@@ -284,7 +285,12 @@ func untar(destDir string, r io.Reader) (retErr error) {
 		}
 
 		// the target location where the dir/file should be created
-		target := filepath.Join(destDir, header.Name)
+		// fixes CWE-22 by cleaning the path
+		cleanedName := filepath.Clean(header.Name)
+		if strings.Contains(cleanedName, "..") {
+			return fmt.Errorf("invalid file path: %s", header.Name)
+		}
+		target := filepath.Join(destDir, cleanedName)
 
 		// the following switch could also be done using fi.Mode(), not sure if there
 		// a benefit of using one vs. the other.

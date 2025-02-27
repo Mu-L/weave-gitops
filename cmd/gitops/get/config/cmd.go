@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
 	cfg "github.com/weaveworks/weave-gitops/cmd/gitops/config"
 	"github.com/weaveworks/weave-gitops/pkg/config"
 	"github.com/weaveworks/weave-gitops/pkg/logger"
@@ -40,12 +41,7 @@ func getConfigCommandRunE(opts *cfg.Options) func(*cobra.Command, []string) erro
 
 		log.Successf("Your CLI configuration for Weave GitOps:")
 
-		cfgStr, err := gitopsConfig.String()
-		if err != nil {
-			log.Failuref("Error printing config")
-			return err
-		}
-
+		cfgStr := gitopsConfig.String()
 		fmt.Println(cfgStr)
 
 		return nil

@@ -5,20 +5,22 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/ptypes/any"
 	"github.com/hashicorp/go-multierror"
-	pacv2beta2 "github.com/weaveworks/policy-agent/api/v2beta2"
-	"github.com/weaveworks/weave-gitops/core/clustersmngr"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	pacv2beta2 "github.com/weaveworks/policy-agent/api/v2beta2"
+
+	"github.com/weaveworks/weave-gitops/core/clustersmngr"
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/server/auth"
 )
 
 const (
@@ -29,7 +31,7 @@ func getPolicyParamValue(param pacv2beta2.PolicyParameters, policyID string) (*a
 	if param.Value == nil {
 		return nil, nil
 	}
-	var anyValue *any.Any
+	var anyValue *anypb.Any
 	var err error
 	switch param.Type {
 	case "string":
@@ -44,14 +46,20 @@ func getPolicyParamValue(param pacv2beta2.PolicyParameters, policyID string) (*a
 		value := wrapperspb.String(strValue)
 		anyValue, err = anypb.New(value)
 	case "integer":
-		intValue, convErr := strconv.Atoi(string(param.Value.Raw))
+		intValue, convErr := strconv.ParseInt(string(param.Value.Raw), 10, 32)
 		if convErr != nil {
 			err = convErr
+			break
+		}
+		if intValue < math.MinInt32 || intValue > math.MaxInt32 {
+			err = fmt.Errorf("integer value out of int32 range")
 			break
 		}
 		value := wrapperspb.Int32(int32(intValue))
 		anyValue, err = anypb.New(value)
 	case "boolean":
+		// fixes CWE-190 CWE-681
+		// https://github.com/weaveworks/weave-gitops/security/code-scanning/3886
 		boolValue, convErr := strconv.ParseBool(string(param.Value.Raw))
 		if convErr != nil {
 			err = convErr
@@ -95,15 +103,15 @@ func policyToPolicyRespone(policyCRD pacv2beta2.Policy, clusterName string) (*pb
 		HowToSolve:  policySpec.HowToSolve,
 	}
 
-	var policyLabels []*pb.PolicyTargetLabel
+	policyLabels := make([]*pb.PolicyTargetLabel, len(policySpec.Targets.Labels))
 	for i := range policySpec.Targets.Labels {
-		policyLabels = append(policyLabels, &pb.PolicyTargetLabel{
+		policyLabels[i] = &pb.PolicyTargetLabel{
 			Values: policySpec.Targets.Labels[i],
-		})
+		}
 	}
 
-	var policyParams []*pb.PolicyParam
-	for _, param := range policySpec.Parameters {
+	policyParams := make([]*pb.PolicyParam, len(policySpec.Parameters))
+	for i, param := range policySpec.Parameters {
 		policyParam := &pb.PolicyParam{
 			Name:     param.Name,
 			Required: param.Required,
@@ -114,14 +122,14 @@ func policyToPolicyRespone(policyCRD pacv2beta2.Policy, clusterName string) (*pb
 			return nil, err
 		}
 		policyParam.Value = value
-		policyParams = append(policyParams, policyParam)
+		policyParams[i] = policyParam
 	}
-	var policyStandards []*pb.PolicyStandard
-	for _, standard := range policySpec.Standards {
-		policyStandards = append(policyStandards, &pb.PolicyStandard{
+	policyStandards := make([]*pb.PolicyStandard, len(policySpec.Standards))
+	for i, standard := range policySpec.Standards {
+		policyStandards[i] = &pb.PolicyStandard{
 			Id:       standard.ID,
 			Controls: standard.Controls,
-		})
+		}
 	}
 
 	policy.Targets = &pb.PolicyTargets{
@@ -143,9 +151,11 @@ func (cs *coreServer) ListPolicies(ctx context.Context, m *pb.ListPoliciesReques
 
 	clustersClient, err = cs.clustersManager.GetImpersonatedClient(ctx, auth.Principal(ctx))
 	if err != nil {
-		if merr, ok := err.(*multierror.Error); ok {
+		var merr *multierror.Error
+		if errors.As(err, &merr) {
 			for _, err := range merr.Errors {
-				if cerr, ok := err.(*clustersmngr.ClientError); ok {
+				var cerr *clustersmngr.ClientError
+				if errors.As(err, &cerr) {
 					respErrors = append(respErrors, &pb.ListError{ClusterName: cerr.ClusterName, Message: cerr.Error()})
 				}
 			}

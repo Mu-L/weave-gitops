@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useHistory } from "react-router-dom";
+import type { JSX } from "react";
+import { useNavigate } from "react-router";
 import { DetailViewProps } from "../components/DetailModal";
 import { formatURL } from "../lib/nav";
 import { PageRoute, V2Routes } from "../lib/types";
@@ -37,7 +38,7 @@ export type AppContextType = {
 };
 
 export const AppContext = React.createContext<AppContextType>(
-  null as AppContextType
+  null as AppContextType,
 );
 
 export interface AppProps {
@@ -47,7 +48,7 @@ export interface AppProps {
 }
 
 export default function AppContextProvider({ ...props }: AppProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [appState, setAppState] = React.useState({
     error: null,
     detailModal: null,
@@ -109,8 +110,7 @@ export default function AppContextProvider({ ...props }: AppProps) {
     navigate: {
       internal: (page: PageRoute, query?: any) => {
         const u = formatURL(page, query);
-
-        history.push(u);
+        navigate(u);
       },
       external: (url) => {
         if (process.env.NODE_ENV === "test") {
@@ -121,7 +121,7 @@ export default function AppContextProvider({ ...props }: AppProps) {
     },
     request: (
       input: RequestInfo | URL,
-      init?: RequestInit
+      init?: RequestInit,
     ): Promise<Response> => {
       if (typeof input === "string") {
         input = withBasePath(input);

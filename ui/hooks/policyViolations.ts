@@ -1,5 +1,5 @@
+import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
-import { useQuery } from "react-query";
 
 import { CoreClientContext } from "../contexts/CoreClientContext";
 import {
@@ -17,14 +17,14 @@ export function useListPolicyValidations(
   opts: ReactQueryOptions<ListPolicyValidationsResponse, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
-  return useQuery<ListPolicyValidationsResponse, Error>(
-    [LIST_POLICY_VIOLATION_QUERY_KEY, req],
-    () => api.ListPolicyValidations(req),
-    opts
-  );
+  return useQuery<ListPolicyValidationsResponse, Error>({
+    queryKey: [LIST_POLICY_VIOLATION_QUERY_KEY, req],
+    queryFn: () => api.ListPolicyValidations(req),
+    ...opts,
+  });
 }
 
 const GET_POLICY_VIOLATION_QUERY_KEY = "get-policy-violation-details";
@@ -34,12 +34,12 @@ export function useGetPolicyValidationDetails(
   opts: ReactQueryOptions<GetPolicyValidationResponse, RequestError> = {
     retry: false,
     refetchInterval: 5000,
-  }
+  },
 ) {
   const { api } = useContext(CoreClientContext);
-  return useQuery<GetPolicyValidationResponse, Error>(
-    [GET_POLICY_VIOLATION_QUERY_KEY, req],
-    () => api.GetPolicyValidation(req),
-    opts
-  );
+  return useQuery<GetPolicyValidationResponse, Error>({
+    queryKey: [GET_POLICY_VIOLATION_QUERY_KEY, req],
+    queryFn: () => api.GetPolicyValidation(req),
+    ...opts,
+  });
 }

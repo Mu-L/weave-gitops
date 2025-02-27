@@ -22,8 +22,8 @@ describe("Pagination", () => {
           index={5}
           length={1}
           totalObjects={10}
-        />
-      )
+        />,
+      ),
     );
     const back = screen.getByLabelText("back one page");
     const skipBack = screen.getByLabelText("skip to first page");
@@ -52,8 +52,8 @@ describe("Pagination", () => {
           index={0}
           length={1}
           totalObjects={3}
-        />
-      )
+        />,
+      ),
     );
     const back = screen.getByLabelText("back one page");
     const skipBack = screen.getByLabelText("skip to first page");
@@ -76,12 +76,12 @@ describe("Pagination", () => {
           index={0}
           length={1}
           totalObjects={3}
-        />
-      )
+        />,
+      ),
     );
     let select;
-    screen.getAllByRole("button").forEach((button) => {
-      if (button.getAttribute("aria-haspopup")) select = button;
+    screen.getAllByText("25").forEach((button) => {
+      select = button;
     });
     fireEvent.mouseDown(select);
     const listbox = within(screen.getByRole("listbox"));

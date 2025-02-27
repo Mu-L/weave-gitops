@@ -5,12 +5,13 @@ import (
 	"testing"
 
 	. "github.com/onsi/gomega"
-	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
-	"github.com/weaveworks/weave-gitops/pkg/kube"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
+
+	pb "github.com/weaveworks/weave-gitops/pkg/api/core"
+	"github.com/weaveworks/weave-gitops/pkg/kube"
 )
 
 func TestGetViolation(t *testing.T) {
@@ -49,8 +50,8 @@ func TestGetViolation(t *testing.T) {
 		})).
 		Build()
 
-	cfg := makeServerConfig(client, t, "")
-	c := makeServer(cfg, t)
+	cfg := makeServerConfig(t, client, "")
+	c := makeServer(ctx, t, cfg)
 
 	// existing validation
 	res, err := c.GetPolicyValidation(ctx, &pb.GetPolicyValidationRequest{
@@ -113,14 +114,26 @@ func TestListApplicationValidations(t *testing.T) {
 			e.Annotations["policy_id"] = "weave.policies.missing-app-label"
 			e.Labels["pac.weave.works/id"] = "56701548-12c1-4f79-a09a-a12979904"
 		})).
-		WithIndex(&corev1.Event{}, "type", client.IndexerFunc(func(o client.Object) []string {
+		WithIndex(&corev1.Event{}, "type", func(o client.Object) []string {
 			event := o.(*corev1.Event)
 			return []string{event.Type}
-		})).
+		}).
+		WithIndex(&corev1.Event{}, "involvedObject.kind", func(o client.Object) []string {
+			event := o.(*corev1.Event)
+			return []string{event.InvolvedObject.Kind}
+		}).
+		WithIndex(&corev1.Event{}, "involvedObject.namespace", func(o client.Object) []string {
+			event := o.(*corev1.Event)
+			return []string{event.InvolvedObject.Namespace}
+		}).
+		WithIndex(&corev1.Event{}, "involvedObject.name", func(o client.Object) []string {
+			event := o.(*corev1.Event)
+			return []string{event.InvolvedObject.Name}
+		}).
 		Build()
 
-	cfg := makeServerConfig(client, t, "")
-	c := makeServer(cfg, t)
+	cfg := makeServerConfig(t, client, "")
+	c := makeServer(ctx, t, cfg)
 	res, err := c.ListPolicyValidations(ctx, &pb.ListPolicyValidationsRequest{
 		Application: "app1",
 		Kind:        "HelmRelease",
@@ -179,8 +192,8 @@ func TestListPolicyValidations(t *testing.T) {
 		})).
 		Build()
 
-	cfg := makeServerConfig(client, t, "")
-	c := makeServer(cfg, t)
+	cfg := makeServerConfig(t, client, "")
+	c := makeServer(ctx, t, cfg)
 	res, err := c.ListPolicyValidations(ctx, &pb.ListPolicyValidationsRequest{})
 	g.Expect(err).NotTo(HaveOccurred())
 	g.Expect(err).To(BeNil())
