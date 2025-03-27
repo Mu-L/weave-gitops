@@ -17,7 +17,7 @@ require (
 	github.com/fluxcd/kustomize-controller/api v1.5.1
 	github.com/fluxcd/notification-controller/api v1.5.0
 	github.com/fluxcd/pkg/apis/meta v1.10.0
-	github.com/fluxcd/pkg/runtime v0.55.0
+	github.com/fluxcd/pkg/runtime v0.56.0
 	github.com/fluxcd/pkg/ssa v0.45.1
 	github.com/fluxcd/source-controller/api v1.5.0
 	github.com/go-git/go-git/v5 v5.14.0
@@ -25,7 +25,7 @@ require (
 	github.com/go-logr/logr v1.4.2
 	github.com/go-logr/zapr v1.3.0
 	github.com/go-resty/resty/v2 v2.16.5
-	github.com/golang-jwt/jwt/v5 v5.2.1
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/google/go-cmp v0.7.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	github.com/grpc-ecosystem/protoc-gen-grpc-gateway-ts v1.1.2
@@ -36,8 +36,8 @@ require (
 	github.com/maxbrunsfeld/counterfeiter/v6 v6.11.2
 	github.com/minio/minio-go/v7 v7.0.88
 	github.com/oauth2-proxy/mockoidc v0.0.0-20240214162133-caebfff84d25
-	github.com/onsi/ginkgo/v2 v2.23.1
-	github.com/onsi/gomega v1.36.2
+	github.com/onsi/ginkgo/v2 v2.23.3
+	github.com/onsi/gomega v1.36.3
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/slok/go-http-metrics v0.13.0
 	github.com/spf13/cobra v1.9.1
@@ -58,7 +58,7 @@ require (
 	k8s.io/cli-runtime v0.32.3
 	k8s.io/client-go v0.32.3
 	sigs.k8s.io/cli-utils v0.37.2
-	sigs.k8s.io/controller-runtime v0.20.3
+	sigs.k8s.io/controller-runtime v0.20.4
 	sigs.k8s.io/kustomize/api v0.19.0
 	sigs.k8s.io/yaml v1.4.0
 )
